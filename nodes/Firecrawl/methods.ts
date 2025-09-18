@@ -15,6 +15,7 @@ import { apiMethods } from './api';
  * - API methods for getCrawlStatus operations
  * - API methods for extract operations
  * - API methods for getExtractStatus operations
+ * - API methods for batchScrape operations
  *
  * @returns The combined methods object that implements INodeType['methods']
  */

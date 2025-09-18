@@ -1,19 +1,29 @@
 import { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 
 // Import options and properties from each operation
-import { options as searchOptions, properties as searchProperties } from './search';
+import { options as crawlOptions, properties as crawlProperties } from './crawl';
+import { options as extractOptions, properties as extractProperties } from './extract';
+import
+	{
+		options as getCrawlStatusOptions,
+		properties as getCrawlStatusProperties,
+	} from './getCrawlStatus';
+import
+	{
+		options as getBatchScrapeStatusOptions,
+		properties as getBatchScrapeStatusProperties,
+	} from './getBatchScrapeStatus';
+import
+	{
+		options as getExtractStatusOptions,
+		properties as getExtractStatusProperties,
+	} from './getExtractStatus';
 import { options as mapOptions, properties as mapProperties } from './map';
 import { options as scrapeOptions, properties as scrapeProperties } from './scrape';
-import { options as crawlOptions, properties as crawlProperties } from './crawl';
-import {
-	options as getCrawlStatusOptions,
-	properties as getCrawlStatusProperties,
-} from './getCrawlStatus';
-import { options as extractOptions, properties as extractProperties } from './extract';
-import {
-	options as getExtractStatusOptions,
-	properties as getExtractStatusProperties,
-} from './getExtractStatus';
+import { options as searchOptions, properties as searchProperties } from './search';
+import { options as batchScrapeOptions, properties as batchScrapeProperties } from './batchScrape';
+import { options as cancelBatchScrapeOptions, properties as cancelBatchScrapeProperties } from './cancelBatchScrape';
+import { options as getBatchScrapeErrorsOptions, properties as getBatchScrapeErrorsProperties } from './getBatchScrapeErrors';
 
 /**
  * Combined operation options
@@ -24,8 +34,12 @@ const operationOptions: INodePropertyOptions[] = [
 	scrapeOptions,
 	crawlOptions,
 	getCrawlStatusOptions,
+	getBatchScrapeStatusOptions,
 	extractOptions,
 	getExtractStatusOptions,
+	batchScrapeOptions,
+	cancelBatchScrapeOptions,
+	getBatchScrapeErrorsOptions,
 ];
 
 /**
@@ -37,8 +51,12 @@ const rawProperties: INodeProperties[] = [
 	...scrapeProperties,
 	...crawlProperties,
 	...getCrawlStatusProperties,
+	...getBatchScrapeStatusProperties,
 	...extractProperties,
 	...getExtractStatusProperties,
+	...batchScrapeProperties,
+	...cancelBatchScrapeProperties,
+	...getBatchScrapeErrorsProperties,
 ];
 
 /**
@@ -93,12 +111,32 @@ export const apiMethods = {
 				return this.helpers.httpRequest as any;
 			},
 		},
+		getBatchScrapeStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
 		extract: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
 		},
 		getExtractStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		batchScrape: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		cancelBatchScrape: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getBatchScrapeErrors: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},

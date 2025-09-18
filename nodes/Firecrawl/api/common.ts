@@ -416,6 +416,59 @@ export function createIncludeTagsProperty(
 }
 
 /**
+ * Creates a batch URL input property for multiple URLs
+ * @param operationName - The name of the operation
+ * @param defaultUrl - The default URL value
+ * @param resourceName - The name of the resource
+ * @returns A node property for batch URL inputs
+ */
+export function createBatchUrlsProperty(
+	operationName: string,
+	defaultUrl: string = 'https://firecrawl.dev',
+	resourceName: string = 'Default',
+): INodeProperties {
+	return {
+		displayName: 'URLs',
+		name: 'urls',
+		type: 'fixedCollection',
+		typeOptions: {
+			multipleValues: true,
+		},
+		default: {},
+		description: 'List of URLs to process in batch',
+		placeholder: 'Add URL',
+		options: [
+			{
+				name: 'urlValues',
+				displayName: 'URL',
+				values: [
+					{
+						displayName: 'URL',
+						name: 'url',
+						type: 'string',
+						default: defaultUrl,
+						description: 'URL to process',
+					},
+				],
+			},
+		],
+		routing: {
+			request: {
+				body: {
+					urls: '={{ $value.urlValues ? $value.urlValues.map(u => u.url) : [] }}',
+				},
+			},
+		},
+		displayOptions: {
+			show: {
+				resource: [resourceName],
+				operation: [operationName],
+			},
+		},
+	};
+}
+
+/**
  * Creates the exclude tags property
  * @param operationName - The name of the operation
  * @param omitDisplayOptions - Whether to omit the display options
@@ -486,9 +539,141 @@ export function createExcludeTagsProperty(
  * @param useNestedScrapeOptions - Whether to use nested scrape options
  * @returns The scrape options property
  */
+/**
+ * Creates batch-specific properties for scrape options
+ * @returns Array of batch-specific node properties
+ */
+function createBatchSpecificProperties(): INodeProperties[] {
+	return [
+		{
+			displayName: 'Webhook',
+			name: 'webhook',
+			type: 'fixedCollection',
+			default: {},
+			description: 'Webhook settings to receive notifications for batch scrape events',
+			options: [
+				{
+					displayName: 'Webhook Settings',
+					name: 'settings',
+					values: [
+						{
+							displayName: 'URL',
+							name: 'url',
+							type: 'string',
+							required: true,
+							default: '',
+							description: 'The URL to send the webhook to. Triggers for batchScrape.started, batchScrape.page, batchScrape.completed, or batchScrape.failed events.',
+						},
+						{
+							displayName: 'Headers',
+							name: 'headers',
+							type: 'fixedCollection',
+							default: {},
+							typeOptions: {
+								multipleValues: true,
+							},
+							description: 'Headers to send to the webhook URL',
+							options: [
+								{
+									displayName: 'Header',
+									name: 'header',
+									values: [
+										{
+											displayName: 'Key',
+											name: 'key',
+											type: 'string',
+											default: '',
+											description: 'Header key',
+										},
+										{
+											displayName: 'Value',
+											name: 'value',
+											type: 'string',
+											default: '',
+											description: 'Header value',
+										},
+									],
+								},
+							],
+						},
+						{
+							displayName: 'Metadata',
+							name: 'metadata',
+							type: 'json',
+							default: '{}',
+							description: 'Custom metadata that will be included in all webhook payloads for this crawl',
+						},
+						{
+							displayName: 'Events',
+							name: 'events',
+							type: 'multiOptions',
+							options: [
+								{
+									name: 'Started',
+									value: 'started',
+								},
+								{
+									name: 'Page',
+									value: 'page',
+								},
+								{
+									name: 'Completed',
+									value: 'completed',
+								},
+								{
+									name: 'Failed',
+									value: 'failed',
+								},
+							],
+							default: ['completed', 'page', 'failed', 'started'],
+							description: 'Type of events that should be sent to the webhook URL',
+						},
+					],
+				},
+			],
+			routing: {
+				request: {
+					body: {
+						webhook: '={{$value.settings ? { url: $value.settings.url, headers: $value.settings.headers?.header?.reduce((acc, h) => ({ ...acc, [h.key]: h.value }), {}) || {}, metadata: $value.settings.metadata ? JSON.parse($value.settings.metadata) : {}, events: $value.settings.events || [] } : undefined}}',
+					},
+				},
+			},
+		},
+		{
+			displayName: 'Max Concurrency',
+			name: 'maxConcurrency',
+			type: 'number',
+			default: '',
+			description: 'Maximum number of concurrent scrapes. If not specified, adheres to your team\'s concurrency limit.',
+		},
+		{
+			displayName: 'Ignore Invalid URLs',
+			name: 'ignoreInvalidURLs',
+			type: 'boolean',
+			default: true,
+			description: 'Whether invalid URLs should be ignored. Instead of failing the entire request, a batch scrape using the remaining valid URLs will be created.',
+		},
+		{
+			displayName: 'Store In Cache',
+			name: 'storeInCache',
+			type: 'boolean',
+			default: true,
+			description: 'Whether the page will be stored in the Firecrawl index and cache. Setting this to false is useful if your scraping activity may have data protection concerns.',
+		},
+		{
+			displayName: 'Zero Data Retention',
+			name: 'zeroDataRetention',
+			type: 'boolean',
+			default: false,
+			description: 'Whether to ensure no data is retained on the server after the scrape is complete',
+		},
+	];
+}
+
 export function createScrapeOptionsProperty(
 	operationName: string,
 	useNestedScrapeOptions: boolean = true,
+	batchMode: boolean = false,
 ): INodeProperties {
 	const scrapeOptionsBody = useNestedScrapeOptions
 		? { scrapeOptions: '={{$value.options}}' }
@@ -814,6 +999,7 @@ export function createScrapeOptionsProperty(
 							},
 						],
 					},
+					...(batchMode ? createBatchSpecificProperties() : []),
 				],
 			},
 		],
@@ -832,6 +1018,21 @@ export function createScrapeOptionsProperty(
 			},
 		},
 	};
+}
+
+/**
+ * Creates the batch scrape properties
+ * @param operationName - The name of the operation
+ * @returns An array of node properties for batch scrape
+ */
+export function createBatchScrapeProperties(operationName: string): INodeProperties {
+	return {
+		...createScrapeOptionsProperty(
+			operationName,
+			false,
+			true,
+		),
+	}
 }
 
 /**
