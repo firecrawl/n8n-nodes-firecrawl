@@ -27,6 +27,10 @@ import {
 	properties as getExtractStatusProperties,
 } from './getExtractStatus';
 import {
+	options as getQueueStatusOptions,
+	properties as getQueueStatusProperties,
+} from './getQueueStatus';
+import {
 	options as getHistoricalCreditUsageOptions,
 	properties as getHistoricalCreditUsageProperties,
 } from './getHistoricalCreditUsage';
@@ -62,6 +66,7 @@ const operationOptions: INodePropertyOptions[] = [
 	getHistoricalCreditUsageOptions,
 	getHistoricalTokenUsageOptions,
 	crawlParamsPreviewOptions,
+	getQueueStatusOptions,
 ];
 
 /**
@@ -87,6 +92,7 @@ const rawProperties: INodeProperties[] = [
 	...getHistoricalCreditUsageProperties,
 	...getHistoricalTokenUsageProperties,
 	...crawlParamsPreviewProperties,
+	...getQueueStatusProperties,
 ];
 
 /**
@@ -182,6 +188,11 @@ export const apiMethods = {
 			},
 		},
 		getActiveCrawls: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getQueueStatus: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
