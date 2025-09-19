@@ -456,17 +456,4 @@ const { options, properties } = buildApiProperties(name, displayName, createCraw
 // Add the additional fields property separately so it appears only when custom body is enabled
 properties.push(createAdditionalFieldsProperty(name));
 
-if (options.routing) {
-	options.routing.output = {
-		postReceive: [
-			{
-				type: 'setKeyValue',
-				properties: {
-					data: '={{$response.body}}',
-				},
-			},
-		],
-	};
-}
-
 export { options, properties };
