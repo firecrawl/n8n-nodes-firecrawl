@@ -23,9 +23,12 @@ import { apiMethods } from './api';
  * - API methods for cancelCrawl operations
  * - API methods for getActiveCrawls operations
  * - API methods for getCrawlErrors operations
- * - API methods for getCrawlParamsPreview operations
+ * - API methods for crawlParamsPreview operations
  * - API methods for getCreditUsage operations
  * - API methods for getTokenUsage operations
+ * - API methods for getHistoricalCreditUsage operations
+ * - API methods for getHistoricalTokenUsage operations
+ * - API methods for getQueueStatus operations
  *
  * @returns The combined methods object that implements INodeType['methods']
  */
