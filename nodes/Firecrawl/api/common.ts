@@ -1,4 +1,10 @@
-import { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
+import {
+    INodeProperties,
+    INodePropertyOptions,
+    IExecuteSingleFunctions,
+    IHttpRequestOptions,
+    IDataObject,
+} from 'n8n-workflow';
 import { buildPropertiesWithOptions } from '../helpers';
 
 /**
@@ -73,6 +79,73 @@ export function createUrlProperty(
 			},
 		},
 	};
+}
+
+/**
+ * Creates a reusable Additional Fields property that allows users to merge
+ * arbitrary JSON into the request body when Use Custom Body is enabled.
+ */
+export function createAdditionalFieldsProperty(operation: string): INodeProperties {
+    return {
+        displayName: 'Additional Fields',
+        name: 'additionalFields',
+        type: 'collection',
+        placeholder: 'Add Field',
+        default: {},
+        description: 'Additional fields to send in the request body',
+        options: [
+            {
+                displayName: 'Custom Properties (JSON)',
+                name: 'customProperties',
+                type: 'json',
+                default: '{}',
+                description: 'Custom JSON properties to add to the request body',
+            },
+        ],
+        routing: {
+            request: {
+                body: {
+                    additionalFields: '={{ $value }}',
+                },
+            },
+            send: {
+                preSend: [
+                    async function (
+                        this: IExecuteSingleFunctions,
+                        requestOptions: IHttpRequestOptions,
+                    ): Promise<IHttpRequestOptions> {
+                        if (typeof requestOptions.body !== 'object' || !requestOptions.body) {
+                            return requestOptions;
+                        }
+
+                        const body = requestOptions.body as IDataObject;
+                        const additionalFields = body.additionalFields as IDataObject;
+
+                        if (additionalFields) {
+                            if (additionalFields.customProperties) {
+                                try {
+                                    const customProps = JSON.parse(additionalFields.customProperties as string);
+                                    Object.assign(requestOptions.body as IDataObject, customProps);
+                                } catch (error) {
+                                    // Ignore JSON parse errors and continue
+                                }
+                            }
+
+                            delete body.additionalFields;
+                        }
+
+                        return requestOptions;
+                    },
+                ],
+            },
+        },
+        displayOptions: {
+            show: {
+                operation: [operation],
+                useCustomBody: [true],
+            },
+        },
+    };
 }
 
 /**

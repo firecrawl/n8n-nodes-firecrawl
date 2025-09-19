@@ -1,10 +1,5 @@
-import {
-	INodeProperties,
-	IDataObject,
-	IExecuteSingleFunctions,
-	IHttpRequestOptions,
-} from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice, createScrapeOptionsProperty } from '../common';
+import { INodeProperties } from 'n8n-workflow';
+import { buildApiProperties, createOperationNotice, createScrapeOptionsProperty, createAdditionalFieldsProperty } from '../common';
 
 const name = 'extract';
 const displayName = 'Extract Data';
@@ -224,70 +219,7 @@ function createShowSourcesProperty(): INodeProperties {
 /**
  * Create additional fields property for custom data
  */
-function createAdditionalFieldsProperty(operation: string): INodeProperties {
-	return {
-		displayName: 'Additional Fields',
-		name: 'additionalFields',
-		type: 'collection',
-		placeholder: 'Add Field',
-		default: {},
-		description: 'Additional fields to send in the request body',
-		options: [
-			{
-				displayName: 'Custom Properties (JSON)',
-				name: 'customProperties',
-				type: 'json',
-				default: '{}',
-				description: 'Custom JSON properties to add to the request body',
-			},
-		],
-		routing: {
-			request: {
-				body: {
-					additionalFields: '={{ $value }}',
-				},
-			},
-			send: {
-				preSend: [
-					async function (
-						this: IExecuteSingleFunctions,
-						requestOptions: IHttpRequestOptions,
-					): Promise<IHttpRequestOptions> {
-						if (typeof requestOptions.body !== 'object' || !requestOptions.body) {
-							return requestOptions;
-						}
-
-						const body = requestOptions.body as IDataObject;
-						const additionalFields = body.additionalFields as IDataObject;
-
-						if (additionalFields) {
-							// Handle custom properties JSON
-							if (additionalFields.customProperties) {
-								try {
-									const customProps = JSON.parse(additionalFields.customProperties as string);
-									Object.assign(requestOptions.body as IDataObject, customProps);
-								} catch (error) {
-									// If JSON parsing fails, just skip
-								}
-							}
-
-							// Remove the additionalFields wrapper
-							delete body.additionalFields;
-						}
-
-						return requestOptions;
-					},
-				],
-			},
-		},
-		displayOptions: {
-			show: {
-				operation: [operation],
-				useCustomBody: [true],
-			},
-		},
-	};
-}
+// Additional Fields handled via shared helper
 
 /**
  * Creates all properties for the extract operation

@@ -10,6 +10,10 @@ import {
 	options as getCrawlStatusOptions,
 	properties as getCrawlStatusProperties,
 } from './getCrawlStatus';
+import { options as getCrawlErrorsOptions, properties as getCrawlErrorsProperties } from './getCrawlErrors';
+import { options as getActiveCrawlsOptions, properties as getActiveCrawlsProperties } from './getActiveCrawls';
+import { options as previewCrawlParamsOptions, properties as previewCrawlParamsProperties } from './previewCrawlParams';
+import { options as cancelCrawlOptions, properties as cancelCrawlProperties } from './cancelCrawl';
 import { options as extractOptions, properties as extractProperties } from './extract';
 import {
 	options as getExtractStatusOptions,
@@ -27,6 +31,11 @@ import {
 	options as cancelBatchScrapeOptions,
 	properties as cancelBatchScrapeProperties,
 } from './cancelBatchScrape';
+import { options as getTeamCreditUsageOptions, properties as getTeamCreditUsageProperties } from './getTeamCreditUsage';
+import { options as getTeamCreditUsageHistoricalOptions, properties as getTeamCreditUsageHistoricalProperties } from './getTeamCreditUsageHistorical';
+import { options as getTeamQueueStatusOptions, properties as getTeamQueueStatusProperties } from './getTeamQueueStatus';
+import { options as getTeamTokenUsageOptions, properties as getTeamTokenUsageProperties } from './getTeamTokenUsage';
+import { options as getTeamTokenUsageHistoricalOptions, properties as getTeamTokenUsageHistoricalProperties } from './getTeamTokenUsageHistorical';
 
 /**
  * Combined operation options
@@ -38,11 +47,20 @@ const operationOptions: INodePropertyOptions[] = [
 	batchScrapeOptions,
 	crawlOptions,
 	getCrawlStatusOptions,
+	getCrawlErrorsOptions,
+	getActiveCrawlsOptions,
+	previewCrawlParamsOptions,
+	cancelCrawlOptions,
 	extractOptions,
 	getExtractStatusOptions,
 	getBatchScrapeStatusOptions,
 	getBatchScrapeErrorsOptions,
 	cancelBatchScrapeOptions,
+	getTeamCreditUsageOptions,
+	getTeamCreditUsageHistoricalOptions,
+	getTeamQueueStatusOptions,
+	getTeamTokenUsageOptions,
+	getTeamTokenUsageHistoricalOptions,
 ];
 
 /**
@@ -55,11 +73,20 @@ const rawProperties: INodeProperties[] = [
 	...batchScrapeProperties,
 	...crawlProperties,
 	...getCrawlStatusProperties,
+	...getCrawlErrorsProperties,
+	...getActiveCrawlsProperties,
+	...previewCrawlParamsProperties,
+	...cancelCrawlProperties,
 	...extractProperties,
 	...getExtractStatusProperties,
 	...getBatchScrapeStatusProperties,
 	...getBatchScrapeErrorsProperties,
 	...cancelBatchScrapeProperties,
+	...getTeamCreditUsageProperties,
+	...getTeamCreditUsageHistoricalProperties,
+	...getTeamQueueStatusProperties,
+	...getTeamTokenUsageProperties,
+	...getTeamTokenUsageHistoricalProperties,
 ];
 
 /**
@@ -119,6 +146,26 @@ export const apiMethods = {
 				return this.helpers.httpRequest as any;
 			},
 		},
+		getCrawlErrors: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getActiveCrawls: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		previewCrawlParams: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		cancelCrawl: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
 		extract: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
@@ -140,6 +187,31 @@ export const apiMethods = {
 			},
 		},
 		cancelBatchScrape: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getTeamCreditUsage: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getTeamCreditUsageHistorical: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getTeamQueueStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getTeamTokenUsage: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getTeamTokenUsageHistorical: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},

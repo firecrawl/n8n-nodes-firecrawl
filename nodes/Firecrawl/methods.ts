@@ -8,13 +8,14 @@ import { apiMethods } from './api';
  * Methods are organized by their respective API operations and
  * include functionality for handling HTTP requests and responses.
  *
- * Currently includes:
- * - API methods for map operations
- * - API methods for scrape operations
- * - API methods for crawl operations
- * - API methods for getCrawlStatus operations
- * - API methods for extract operations
- * - API methods for getExtractStatus operations
+ * Currently includes API methods for:
+ * - Search
+ * - Map
+ * - Scrape
+ * - Crawl (submit, status, errors, active, params preview, cancel)
+ * - Extract (submit, status)
+ * - Batch Scrape (submit, status, errors, cancel)
+ * - Team (credit usage, credit usage historical, token usage, token usage historical, queue status)
  *
  * @returns The combined methods object that implements INodeType['methods']
  */
