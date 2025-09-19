@@ -1021,21 +1021,6 @@ export function createScrapeOptionsProperty(
 }
 
 /**
- * Creates the batch scrape properties
- * @param operationName - The name of the operation
- * @returns An array of node properties for batch scrape
- */
-export function createBatchScrapeProperties(operationName: string): INodeProperties {
-	return {
-		...createScrapeOptionsProperty(
-			operationName,
-			false,
-			true,
-		),
-	}
-}
-
-/**
  * Creates a standard API operation option
  * @param name - The name of the operation
  * @param action - The display name for the action
