@@ -4,6 +4,7 @@ import { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 import { options as searchOptions, properties as searchProperties } from './search';
 import { options as mapOptions, properties as mapProperties } from './map';
 import { options as scrapeOptions, properties as scrapeProperties } from './scrape';
+import { options as batchScrapeOptions, properties as batchScrapeProperties } from './batchScrape';
 import { options as crawlOptions, properties as crawlProperties } from './crawl';
 import {
 	options as getCrawlStatusOptions,
@@ -14,6 +15,18 @@ import {
 	options as getExtractStatusOptions,
 	properties as getExtractStatusProperties,
 } from './getExtractStatus';
+import {
+	options as getBatchScrapeStatusOptions,
+	properties as getBatchScrapeStatusProperties,
+} from './getBatchScrapeStatus';
+import {
+	options as getBatchScrapeErrorsOptions,
+	properties as getBatchScrapeErrorsProperties,
+} from './getBatchScrapeErrors';
+import {
+	options as cancelBatchScrapeOptions,
+	properties as cancelBatchScrapeProperties,
+} from './cancelBatchScrape';
 
 /**
  * Combined operation options
@@ -22,10 +35,14 @@ const operationOptions: INodePropertyOptions[] = [
 	searchOptions,
 	mapOptions,
 	scrapeOptions,
+	batchScrapeOptions,
 	crawlOptions,
 	getCrawlStatusOptions,
 	extractOptions,
 	getExtractStatusOptions,
+	getBatchScrapeStatusOptions,
+	getBatchScrapeErrorsOptions,
+	cancelBatchScrapeOptions,
 ];
 
 /**
@@ -35,10 +52,14 @@ const rawProperties: INodeProperties[] = [
 	...searchProperties,
 	...mapProperties,
 	...scrapeProperties,
+	...batchScrapeProperties,
 	...crawlProperties,
 	...getCrawlStatusProperties,
 	...extractProperties,
 	...getExtractStatusProperties,
+	...getBatchScrapeStatusProperties,
+	...getBatchScrapeErrorsProperties,
+	...cancelBatchScrapeProperties,
 ];
 
 /**
@@ -83,6 +104,11 @@ export const apiMethods = {
 				return this.helpers.httpRequest as any;
 			},
 		},
+		batchScrape: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
 		crawl: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
@@ -99,6 +125,21 @@ export const apiMethods = {
 			},
 		},
 		getExtractStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getBatchScrapeStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getBatchScrapeErrors: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		cancelBatchScrape: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
