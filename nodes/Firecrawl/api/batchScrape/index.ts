@@ -1,17 +1,15 @@
-import
-  {
-    IDataObject,
-    IExecuteSingleFunctions,
-    IHttpRequestOptions,
-    INodeProperties,
-  } from 'n8n-workflow';
-import
-  {
-    buildApiProperties,
-    createBatchUrlsProperty,
-    createOperationNotice,
-    createScrapeOptionsProperty
-  } from '../common';
+import {
+	IDataObject,
+	IExecuteSingleFunctions,
+	IHttpRequestOptions,
+	INodeProperties,
+} from 'n8n-workflow';
+import {
+	buildApiProperties,
+	createBatchUrlsProperty,
+	createOperationNotice,
+	createScrapeOptionsProperty
+} from '../common';
 
 // Define the operation name and display name
 export const name = 'batchScrape';
@@ -130,7 +128,7 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
 function createScrapeProperties(): INodeProperties[] {
   return [
     // Operation notice
-    createOperationNotice('Default', name),
+    createOperationNotice('Default', name, 'POST'),
 
     // URL input
     createBatchUrlsProperty(name, 'https://firecrawl.dev'),
@@ -151,9 +149,19 @@ options.routing = {
   ...options.routing,
   request: {
     ...(options.routing?.request || {}),
-    url: '=/batch/scrape',
-  },
-};
+    url: '/batch/scrape',
+   },
+   output: {
+    postReceive: [
+    	{
+    		type: 'setKeyValue',
+    		properties: {
+    			data: '={{$response.body}}',
+    		},
+    	},
+    ],
+   },
+  };
 
 // Add the additional fields property separately so it appears only when custom body is enabled
 properties.push(createAdditionalFieldsProperty(name));

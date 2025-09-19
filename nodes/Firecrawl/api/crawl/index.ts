@@ -1,12 +1,13 @@
 import {
-	INodeProperties,
 	IDataObject,
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
+	INodeProperties,
 } from 'n8n-workflow';
 import {
 	buildApiProperties,
 	createOperationNotice,
+	createPromptProperty,
 	createScrapeOptionsProperty,
 	createUrlProperty,
 } from '../common';
@@ -261,37 +262,6 @@ function createMaxConcurrencyProperty(operationName: string): INodeProperties {
 }
 
 /**
- * Creates the prompt property
- * @param operationName - The name of the operation
- * @returns The prompt property
- */
-function createPromptProperty(operationName: string): INodeProperties {
-	return {
-		displayName: 'Prompt',
-		name: 'prompt',
-		type: 'string',
-		default: '',
-		description: 'Prompt to use for the crawl',
-		routing: {
-			request: {
-				body: {
-					prompt: '={{ $value }}',
-				},
-			},
-		},
-		displayOptions: {
-			hide: {
-				useCustomBody: [true],
-			},
-			show: {
-				resource: ['Default'],
-				operation: [operationName],
-			},
-		},
-	};
-}
-
-/**
  * Creates the crawl options property
  * @param operationName - The name of the operation
  * @returns The crawl options property
@@ -455,7 +425,7 @@ function createCrawlProperties(): INodeProperties[] {
 		createUrlProperty(name, 'https://firecrawl.dev'),
 
 		// Prompt
-		createPromptProperty(operationName),
+		createPromptProperty(operationName, 'Prompt to use for crawl'),
 
 		// Limit
 		createLimitProperty(operationName),
@@ -485,5 +455,18 @@ const { options, properties } = buildApiProperties(name, displayName, createCraw
 
 // Add the additional fields property separately so it appears only when custom body is enabled
 properties.push(createAdditionalFieldsProperty(name));
+
+if (options.routing) {
+	options.routing.output = {
+		postReceive: [
+			{
+				type: 'setKeyValue',
+				properties: {
+					data: '={{$response.body}}',
+				},
+			},
+		],
+	};
+}
 
 export { options, properties };

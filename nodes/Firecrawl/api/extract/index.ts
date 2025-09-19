@@ -1,10 +1,10 @@
 import {
-	INodeProperties,
 	IDataObject,
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
+	INodeProperties,
 } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice, createScrapeOptionsProperty } from '../common';
+import { buildApiProperties, createOperationNotice, createPromptProperty, createScrapeOptionsProperty } from '../common';
 
 const name = 'extract';
 const displayName = 'Extract Data';
@@ -49,36 +49,6 @@ function createUrlsProperty(): INodeProperties {
 			},
 		},
 		displayOptions: {
-			show: {
-				resource: ['Default'],
-				operation: [operationName],
-			},
-		},
-	};
-}
-
-/**
- * Creates the prompt property
- * @returns The prompt property
- */
-function createPromptProperty(): INodeProperties {
-	return {
-		displayName: 'Prompt',
-		name: 'prompt',
-		type: 'string',
-		default: '',
-		description: 'Prompt to guide the extraction process',
-		routing: {
-			request: {
-				body: {
-					prompt: '={{ $value }}',
-				},
-			},
-		},
-		displayOptions: {
-			hide: {
-				useCustomBody: [true],
-			},
 			show: {
 				resource: ['Default'],
 				operation: [operationName],
@@ -297,7 +267,7 @@ function createExtractProperties(): INodeProperties[] {
 	return [
 		createOperationNotice('Default', name, 'POST'),
 		createUrlsProperty(),
-		createPromptProperty(),
+		createPromptProperty(operationName, 'Prompt to use for extraction'),
 		createSchemaProperty(),
 		createIgnoreSitemapProperty(),
 		createIncludeSubdomainsProperty(),

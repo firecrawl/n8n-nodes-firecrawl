@@ -2,27 +2,27 @@ import { INodeProperties } from 'n8n-workflow';
 import { buildApiProperties, createOperationNotice } from '../common';
 
 // Define the operation name and display name
-export const name = 'cancelBatchScrape';
-export const displayName = 'Cancel Batch Scrape';
+export const name = 'getCrawlErrors';
+export const displayName = 'Get Crawl Errors';
 
-export const operationName = 'cancelBatchScrape';
+export const operationName = 'getCrawlErrors';
 
 /**
- * Creates the batch scrape ID property
- * @returns The batch scrape ID property
+ * Creates the crawl ID property
+ * @returns The crawl ID property
  */
-function createBatchScrapeIdProperty(): INodeProperties {
+function createCrawlIdProperty(): INodeProperties {
 	return {
-		displayName: 'Batch Scrape ID',
-		name: 'batchScrapeId',
+		displayName: 'Crawl ID',
+		name: 'crawlId',
 		type: 'string',
 		required: true,
 		default: '',
-		description: 'ID of the batch scrape job to cancel',
+		description: 'ID of the crawl job to get errors for',
 		placeholder: '1234abcd-5678-efgh-9012-ijklmnopqrst',
 		routing: {
 			request: {
-				url: '=/batch/scrape/{{$value}}',
+				url: '=/crawl/{{$value}}/errors',
 			},
 		},
 		displayOptions: {
@@ -35,15 +35,15 @@ function createBatchScrapeIdProperty(): INodeProperties {
 }
 
 /**
- * Create the properties for the cancelBatchScrape operation
+ * Create the properties for the getCrawlErrors operation
  */
-function createCancelBatchScrapeProperties(): INodeProperties[] {
+function createGetCrawlErrorsProperties(): INodeProperties[] {
 	return [
 		// Operation notice
-		createOperationNotice('Default', name, 'DELETE'),
+		createOperationNotice('Default', name, 'GET'),
 
-		// Batch Scrape ID input
-		createBatchScrapeIdProperty(),
+		// Crawl ID input
+		createCrawlIdProperty(),
 	];
 }
 
@@ -51,13 +51,13 @@ function createCancelBatchScrapeProperties(): INodeProperties[] {
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
-	createCancelBatchScrapeProperties(),
+	createGetCrawlErrorsProperties(),
 );
 
 // Override the default routing for this operation
 options.routing = {
 	request: {
-		method: 'DELETE',
+		method: 'GET',
 	},
 	output: {
 		postReceive: [

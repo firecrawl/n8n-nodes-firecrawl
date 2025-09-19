@@ -1,8 +1,8 @@
 import {
-	INodeProperties,
 	IDataObject,
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
+	INodeProperties,
 } from 'n8n-workflow';
 import {
 	buildApiProperties,

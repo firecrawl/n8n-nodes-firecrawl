@@ -42,6 +42,42 @@ The **Firecrawl** node supports the following operations:
 ### Get Extract Status
 - Get the current status of an extraction job
 
+### Batch Scrape
+- Scrapes multiple URLs a single batch job and get their content
+
+### Cancel Batch Scrape
+- Cancel a running batch scrape job
+
+### Get Batch Scrape Status
+- Check the current status of a batch scrape job
+
+### Get Batch Scrape Errors
+- Get any errors from a completed batch scrape job
+
+### Cancel Crawl
+- Cancel a running crawl job
+
+### Get Crawl Errors
+- Get any errors from a completed crawl job
+
+### Get Active Crawls
+- Get a list of all active crawl jobs
+
+### Get Crawl Params Preview
+- Get a preview of the parameters for a crawl job
+
+### Get Credit Usage
+- Check your current credit usage
+
+### Get Token Usage
+- Check your current token usage
+
+### Get Historical Credit Usage
+- Get your historical credit usage, optionally by API key
+
+### Get Historical Token Usage
+- Get your historical token usage, optionally by API key
+
 ## Credentials
 
 To use the Firecrawl node, you need to:

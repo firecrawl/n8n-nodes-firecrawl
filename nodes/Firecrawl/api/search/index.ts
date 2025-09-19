@@ -1,11 +1,10 @@
 import {
-	INodeProperties,
 	IDataObject,
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
+	INodeProperties,
 } from 'n8n-workflow';
-import { buildApiProperties } from '../common';
-import { createOperationNotice } from '../common';
+import { buildApiProperties, createOperationNotice } from '../common';
 
 // Define the operation name and display name
 export const name = 'search';

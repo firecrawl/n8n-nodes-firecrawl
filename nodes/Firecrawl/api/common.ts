@@ -1056,6 +1056,37 @@ export function createOperationOption(name: string, action: string): INodeProper
 }
 
 /**
+ * Creates the prompt property
+ * @param operationName - The name of the operation
+ * @returns The prompt property
+ */
+export function createPromptProperty(operationName: string, description: string): INodeProperties {
+	return {
+		displayName: 'Prompt',
+		name: 'prompt',
+		type: 'string',
+		default: '',
+		description: description,
+		routing: {
+			request: {
+				body: {
+					prompt: '={{ $value }}',
+				},
+			},
+		},
+		displayOptions: {
+			hide: {
+				useCustomBody: [true],
+			},
+			show: {
+				resource: ['Default'],
+				operation: [operationName],
+			},
+		},
+	};
+}
+
+/**
  * Builds API properties with options
  * @param name - The name of the operation
  * @param action - The display name for the action
