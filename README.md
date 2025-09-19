@@ -78,6 +78,9 @@ The **Firecrawl** node supports the following operations:
 ### Get Historical Token Usage
 - Get your historical token usage, optionally by API key
 
+### Get Queue Status
+- Get the metrics about your team’s scrape queue.
+
 ## Credentials
 
 To use the Firecrawl node, you need to:
