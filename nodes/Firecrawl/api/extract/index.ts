@@ -96,7 +96,7 @@ function createSchemaProperty(): INodeProperties {
 		displayName: 'Schema',
 		name: 'schema',
 		type: 'json',
-		default: '{\n  "property1": "string",\n  "property2": "number"\n}',
+		default: '"{\n "type": "object",\n "properties": {"description": {"type": "string"}},\n "required": ["description"]\n}"',
 		description: 'Schema to define the structure of the extracted data',
 		routing: {
 			request: {
