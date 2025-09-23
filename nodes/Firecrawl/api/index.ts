@@ -14,6 +14,24 @@ import {
 	options as getExtractStatusOptions,
 	properties as getExtractStatusProperties,
 } from './getExtractStatus';
+import { options as batchScrapeOptions, properties as batchScrapeProperties } from './batchScrape';
+import {
+	options as getBatchScrapeStatusOptions,
+	properties as getBatchScrapeStatusProperties,
+} from './getBatchScrapeStatus';
+import {
+	options as cancelBatchScrapeOptions,
+	properties as cancelBatchScrapeProperties,
+} from './cancelBatchScrape';
+import {
+	options as getBatchScrapeErrorsOptions,
+	properties as getBatchScrapeErrorsProperties,
+} from './getBatchScrapeErrors';
+import { options as cancelCrawlOptions, properties as cancelCrawlProperties } from './cancelCrawl';
+import {
+	options as getCrawlErrorsOptions,
+	properties as getCrawlErrorsProperties,
+} from './getCrawlErrors';
 
 /**
  * Combined operation options
@@ -22,8 +40,14 @@ const operationOptions: INodePropertyOptions[] = [
 	searchOptions,
 	mapOptions,
 	scrapeOptions,
+	batchScrapeOptions,
+	getBatchScrapeStatusOptions,
+	cancelBatchScrapeOptions,
+	getBatchScrapeErrorsOptions,
 	crawlOptions,
 	getCrawlStatusOptions,
+	cancelCrawlOptions,
+	getCrawlErrorsOptions,
 	extractOptions,
 	getExtractStatusOptions,
 ];
@@ -35,8 +59,14 @@ const rawProperties: INodeProperties[] = [
 	...searchProperties,
 	...mapProperties,
 	...scrapeProperties,
+	...batchScrapeProperties,
+	...getBatchScrapeStatusProperties,
+	...cancelBatchScrapeProperties,
+	...getBatchScrapeErrorsProperties,
 	...crawlProperties,
 	...getCrawlStatusProperties,
+	...cancelCrawlProperties,
+	...getCrawlErrorsProperties,
 	...extractProperties,
 	...getExtractStatusProperties,
 ];
@@ -83,12 +113,42 @@ export const apiMethods = {
 				return this.helpers.httpRequest as any;
 			},
 		},
+		batchScrape: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getBatchScrapeStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		cancelBatchScrape: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getBatchScrapeErrors: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
 		crawl: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
 		},
 		getCrawlStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		cancelCrawl: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getCrawlErrors: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},

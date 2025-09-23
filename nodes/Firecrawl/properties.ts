@@ -164,6 +164,46 @@ export const extraProperties: INodeProperties[] = [
 ];
 
 /**
+ * Custom body for batch scrape operation
+ */
+const customBodyBatchScrape: INodeProperties = {
+	displayName: 'Custom Body',
+	name: 'customBody',
+	type: 'json',
+	default: `{
+  "urls": [
+    "https://firecrawl.dev",
+    "https://firecrawl.dev/features"
+  ],
+  "webhook": "",
+  "scrapeOptions": {
+    "formats": [
+      {
+        "type": "markdown"
+      }
+    ],
+    "onlyMainContent": true,
+    "removeBase64Images": true,
+    "mobile": false,
+    "waitFor": 0
+  }
+}`,
+	description: 'Custom body to send',
+	routing: {
+		request: {
+			body: '={{JSON.parse($value)}}',
+		},
+	},
+	displayOptions: {
+		show: {
+			resource: ['Default'],
+			operation: ['Batch Scrape URLs'],
+			useCustomBody: [true],
+		},
+	},
+};
+
+/**
  * Custom body for crawl operation
  */
 const customBodyCrawl: INodeProperties = {
@@ -217,5 +257,6 @@ export const allProperties = [
 	...resourceSelect,
 	...apiProperties,
 	...extraProperties,
+	customBodyBatchScrape,
 	customBodyCrawl,
 ];
