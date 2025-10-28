@@ -8,6 +8,7 @@ This is an n8n community node. It lets you use **[Firecrawl](https://firecrawl.d
 
 [Installation](#installation)  
 [Operations](#operations)  
+[Tool Node Support](#tool-node-support)  
 [Credentials](#credentials)  
 [Compatibility](#compatibility)  
 [Resources](#resources)  
@@ -76,7 +77,79 @@ The **Firecrawl** node supports the following operations:
 - Get historical token usage for your team
 
 ### Team Queue Status
-- Get your team’s current queue load (waiting, active, max concurrency)
+- Get your team's current queue load (waiting, active, max concurrency)
+
+## Tool Node Support
+
+The Firecrawl node now supports **Tool Node** functionality for n8n's AI Agent system! This makes Firecrawl seamlessly usable by AI Agents in n8n workflows.
+
+### Available Tools
+
+When used as a Tool Node, Firecrawl exposes the following tools that AI Agents can use:
+
+#### 1. **scrape_url**
+Scrapes a URL and extracts its content in LLM-ready format (markdown, HTML, or structured data).
+
+**Parameters:**
+- `url` (required): The URL to scrape
+- `formats`: Output formats (comma-separated): markdown, html, rawHtml, screenshot, summary
+- `onlyMainContent`: Only return main content (default: true)
+- `actions`: JSON array of actions to interact with dynamic content
+- `headers`: JSON object of custom headers
+- `waitFor`: Wait milliseconds for page to load
+
+#### 2. **extract_data**
+Extracts structured data from one or more URLs using AI. Define a schema to get specific data fields from pages.
+
+**Parameters:**
+- `urls` (required): Comma-separated list of URLs to extract from (supports glob patterns)
+- `schema` (required): JSON schema defining the structure of data to extract
+- `prompt`: Optional prompt to guide the extraction
+- `enableWebSearch`: Enable web search to find additional data
+- `ignoreSitemap`: Ignore the website sitemap
+- `includeSubdomains`: Include subdomains
+
+#### 3. **search_website**
+Search through a website and optionally scrape the results.
+
+**Parameters:**
+- `url` (required): The URL to search on
+- `search` (required): Search query
+- `scrape`: Whether to scrape search results
+- `limit`: Maximum number of results
+
+#### 4. **crawl_website**
+Crawls an entire website and returns structured data from all pages.
+
+**Parameters:**
+- `url` (required): The URL to start crawling from
+- `limit`: Maximum number of pages to crawl (default: 100)
+- `excludePaths`: Comma-separated path patterns to exclude
+- `includePaths`: Comma-separated path patterns to include
+- `prompt`: Natural language prompt to guide the crawl
+- `formats`: Output formats
+- `allowExternalLinks`: Allow crawling external domains
+- `allowSubdomains`: Allow crawling subdomains
+
+#### 5. **map_website**
+Get all URLs from a website without scraping content.
+
+**Parameters:**
+- `url` (required): The URL to map
+- `limit`: Maximum number of URLs (default: 1000)
+- `excludePaths`: Path patterns to exclude
+- `includePaths`: Path patterns to include
+
+### Using Firecrawl with n8n AI Agents
+
+To use Firecrawl as a Tool Node in your n8n AI Agent workflows:
+
+1. Add a Firecrawl node to your workflow
+2. Configure your Firecrawl credentials
+3. The AI Agent will automatically discover and use Firecrawl tools
+4. When the agent needs to scrape, extract, search, or crawl, it will use the appropriate Firecrawl tool
+
+This makes it easier to integrate web data extraction into AI Agent workflows without manual configuration.
 
 ## Credentials
 
@@ -102,6 +175,12 @@ To use the Firecrawl node, you need to:
 * [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 
 ## Version history
+
+### 1.0.7
+- Add Tool Node support for n8n AI Agent system
+- Firecrawl can now be used as a Tool Node in AI Agent workflows
+- Added tool definitions for scrape_url, extract_data, search_website, crawl_website, and map_website
+- Improved discoverability and easier setup for AI Agent integrations
 
 ### 1.0.6
 - Add support for additional Firecrawl endpoints:
