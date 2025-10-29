@@ -6,16 +6,67 @@ This is an n8n community node. It lets you use **[Firecrawl](https://firecrawl.d
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-[Installation](#installation)  
-[Operations](#operations)  
-[Credentials](#credentials)  
-[Compatibility](#compatibility)  
-[Resources](#resources)  
+## ✨ NEW: AI Agent Tool Support
+
+The Firecrawl node now supports **n8n's AI Agent system**! Use it as a tool in AI Agent workflows for intelligent web scraping and data extraction.
+
+[Installation](#installation)
+[AI Agent Tool Usage](#ai-agent-tool-usage)
+[Operations](#operations)
+[Credentials](#credentials)
+[Compatibility](#compatibility)
+[Resources](#resources)
 [Version history](#version-history)  
 
 ## Installation
 
 Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
+
+**For AI Agent Tool usage**, you must also set this environment variable:
+```bash
+export N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+```
+
+## AI Agent Tool Usage
+
+The Firecrawl node can now be used as a **Tool Node** in n8n's AI Agent workflows! This enables AI agents to intelligently scrape websites, search the web, and extract structured data.
+
+### Quick Start
+
+1. **Install** the Firecrawl node (see installation above)
+2. **Set environment variable**: `N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true`
+3. **Restart n8n**
+4. **Create a workflow** with an AI Agent node
+5. **Connect** the Firecrawl node to the AI Agent
+6. **Configure** your Firecrawl API credentials
+
+### Example AI Agent Prompts
+
+Once connected to an AI Agent, you can use natural language prompts like:
+
+- *"Scrape the content from https://example.com and summarize it"*
+- *"Search for recent AI research papers and extract key insights"*
+- *"Map all URLs on https://company.com and then scrape their About page"*
+- *"Extract product information (name, price, description) from this e-commerce page"*
+
+### Available Tool Operations
+
+When used as an AI Agent tool, Firecrawl provides these capabilities:
+
+- **🔍 Web Search**: Find information across multiple websites
+- **📄 Page Scraping**: Extract content from specific URLs
+- **🗺️ Site Mapping**: Discover all URLs on a website
+- **🕷️ Website Crawling**: Extract content from multiple related pages
+- **🎯 Data Extraction**: Get structured data using AI prompts
+- **📊 Batch Operations**: Handle multiple URLs efficiently
+
+### Benefits of AI Agent Integration
+
+- **One-click setup**: No complex workflow design needed
+- **Natural language control**: Use simple prompts instead of manual configuration
+- **Intelligent decision making**: AI chooses the right Firecrawl operation automatically
+- **Seamless integration**: Works with any AI model supported by n8n
+- **Reduced complexity**: Eliminates the need for manual parameter configuration
 
 ## Operations
 
@@ -102,6 +153,16 @@ To use the Firecrawl node, you need to:
 * [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 
 ## Version history
+
+### 1.0.7 (AI Agent Tool Support)
+- ✨ **NEW**: Added support for n8n's AI Agent system
+- 🤖 Node can now be used as an AI Agent Tool for intelligent web scraping
+- 🔧 Added `usableAsTool: true` property for seamless AI integration
+- 📚 Enhanced node description for better AI agent understanding
+- 🛠️ Created tools.ts with AI-friendly operation descriptions
+- 📖 Updated documentation with AI Agent usage examples
+- 🎯 Enables natural language control of web scraping operations
+- 🚀 One-click integration with AI workflows
 
 ### 1.0.6
 - Add support for additional Firecrawl endpoints:
