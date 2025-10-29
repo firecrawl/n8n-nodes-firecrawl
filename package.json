@@ -1,9 +1,15 @@
 {
   "name": "@mendable/n8n-nodes-firecrawl",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Firecrawl node for n8n",
   "keywords": [
-    "n8n-community-node-package"
+    "n8n-community-node-package",
+    "ai-agent",
+    "ai-tool",
+    "web-scraping",
+    "firecrawl",
+    "llm-ready",
+    "data-extraction"
   ],
   "license": "MIT",
   "homepage": "https://www.firecrawl.dev",
