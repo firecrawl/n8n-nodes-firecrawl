@@ -2,6 +2,73 @@ import { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 import { buildPropertiesWithOptions } from '../helpers';
 
 /**
+ * Base URL for Firecrawl n8n documentation
+ */
+export const DOCS_BASE_URL = 'https://docs.firecrawl.dev/developer-guides/workflow-automation/n8n';
+
+/**
+ * Mapping of operation values to their display names
+ */
+export const OPERATION_DISPLAY_NAMES: Record<string, string> = {
+	// Core Operations
+	scrape: 'Scrape a url and get its content',
+	crawl: 'Crawl a website',
+	map: 'Map a website and get urls',
+	search: 'Search and optionally scrape search results',
+	extract: 'Extract Data',
+	batchScrape: 'Batch scrape multiple URLs',
+
+	// Status & Management Operations
+	getCrawlStatus: 'Get crawl status',
+	batchScrapeStatus: 'Get batch scrape status',
+	getExtractStatus: 'Get Extract Status',
+	getCrawlErrors: 'Get crawl errors',
+	batchScrapeErrors: 'Get batch scrape errors',
+	crawlActive: 'List active crawls',
+	cancelCrawl: 'Cancel a crawl job',
+	cancelBatchScrape: 'Cancel batch scrape job',
+	crawlParamsPreview: 'Preview crawl params from prompt',
+
+	// Analytics Operations
+	teamCreditUsage: 'Get team credit usage',
+	teamTokenUsage: 'Get team token usage',
+	creditUsageHistorical: 'Get historical credit usage',
+	teamTokenUsageHistorical: 'Get historical token usage',
+	teamQueueStatus: 'Get team queue status',
+};
+
+/**
+ * Mapping of operation display names to their documentation anchors
+ */
+export const OPERATION_DOC_LINKS: Record<string, string> = {
+	// Core Operations
+	'Scrape a url and get its content': `${DOCS_BASE_URL}#scrape-a-url-and-get-its-content`,
+	'Crawl a website': `${DOCS_BASE_URL}#crawl-a-website`,
+	'Map a website and get urls': `${DOCS_BASE_URL}#map-a-website-and-get-urls`,
+	'Search and optionally scrape search results': `${DOCS_BASE_URL}#search-and-optionally-scrape-search-results`,
+	'Extract Data': `${DOCS_BASE_URL}#extract-data`,
+	'Batch scrape multiple URLs': `${DOCS_BASE_URL}#batch-scrape-multiple-urls`,
+
+	// Status & Management Operations
+	'Get crawl status': `${DOCS_BASE_URL}#get-crawl-status`,
+	'Get batch scrape status': `${DOCS_BASE_URL}#get-batch-scrape-status`,
+	'Get Extract Status': `${DOCS_BASE_URL}#get-extract-status`,
+	'Get crawl errors': `${DOCS_BASE_URL}#get-crawl-errors`,
+	'Get batch scrape errors': `${DOCS_BASE_URL}#get-batch-scrape-errors`,
+	'List active crawls': `${DOCS_BASE_URL}#list-active-crawls`,
+	'Cancel a crawl job': `${DOCS_BASE_URL}#cancel-a-crawl-job`,
+	'Cancel batch scrape job': `${DOCS_BASE_URL}#cancel-batch-scrape-job`,
+	'Preview crawl params from prompt': `${DOCS_BASE_URL}#preview-crawl-params-from-prompt`,
+
+	// Analytics Operations
+	'Get team credit usage': `${DOCS_BASE_URL}#get-team-credit-usage`,
+	'Get team token usage': `${DOCS_BASE_URL}#get-team-token-usage`,
+	'Get historical credit usage': `${DOCS_BASE_URL}#get-historical-credit-usage`,
+	'Get historical token usage': `${DOCS_BASE_URL}#get-historical-token-usage`,
+	'Get team queue status': `${DOCS_BASE_URL}#get-team-queue-status`,
+};
+
+/**
  * Formats an operation name for display
  * @param name - The raw operation name
  * @returns The formatted operation name with proper capitalization
@@ -33,6 +100,37 @@ export function createOperationNotice(
 			theme: 'info',
 		},
 		default: '',
+		displayOptions: {
+			show: {
+				resource: [resourceName],
+				operation: [operationName],
+			},
+		},
+	};
+}
+
+/**
+ * Creates a documentation link notice at the bottom of the operation
+ * @param resourceName - The name of the resource
+ * @param operationName - The name of the operation (value, not display name)
+ * @returns A node property for the documentation link
+ */
+export function createDocumentationNotice(
+	resourceName: string,
+	operationName: string,
+): INodeProperties {
+	const displayName = OPERATION_DISPLAY_NAMES[operationName];
+	const docLink = displayName ? OPERATION_DOC_LINKS[displayName] : DOCS_BASE_URL;
+
+	return {
+		displayName: 'Documentation',
+		name: 'docNotice',
+		type: 'notice',
+		default: '',
+		typeOptions: {
+			theme: 'info',
+		},
+		description: `<a href="${docLink}" target="_blank">View documentation for this operation</a>`,
 		displayOptions: {
 			show: {
 				resource: [resourceName],
@@ -1057,5 +1155,7 @@ export function createOperationOption(name: string, action: string): INodeProper
  */
 export function buildApiProperties(name: string, action: string, properties: INodeProperties[]) {
 	const option = createOperationOption(name, action);
-	return buildPropertiesWithOptions(option, properties);
+	// Add documentation notice at the end
+	const propertiesWithDoc = [...properties, createDocumentationNotice('Default', name)];
+	return buildPropertiesWithOptions(option, propertiesWithDoc);
 }
