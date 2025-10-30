@@ -1,5 +1,8 @@
 import { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 
+// Export documentation links
+export { DOCS_BASE_URL, OPERATION_DOC_LINKS, OPERATION_DISPLAY_NAMES } from './common';
+
 // Import options and properties from each operation
 import { options as searchOptions, properties as searchProperties } from './search';
 import { options as mapOptions, properties as mapProperties } from './map';

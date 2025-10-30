@@ -14,6 +14,7 @@ export class Firecrawl implements INodeType {
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Get data from Firecrawl API',
+		documentationUrl: 'https://docs.firecrawl.dev/developer-guides/workflow-automation/n8n',
 		defaults: {
 			name: 'Firecrawl',
 		},
