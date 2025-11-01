@@ -1,6 +1,7 @@
 import { INodeProperties } from 'n8n-workflow';
 import { apiProperties } from './api';
 import { preSendActionCustomBody } from './helpers';
+import { toolOperationProperties } from './toolSchemas';
 
 /**
  * Authentication properties for the Firecrawl API
@@ -14,12 +15,18 @@ export const resourceSelect: INodeProperties[] = [
 	{
 		displayName: 'Resource',
 		name: 'resource',
-		type: 'hidden',
+		type: 'options',
 		noDataExpression: true,
 		options: [
 			{
 				name: 'Default',
 				value: 'Default',
+				description: 'Standard Firecrawl operations',
+			},
+			{
+				name: 'Tool',
+				value: 'tool',
+				description: 'AI Agent compatible tool operations',
 			},
 		],
 		default: 'Default',
@@ -216,6 +223,7 @@ export const allProperties = [
 	...authenticationProperties,
 	...resourceSelect,
 	...apiProperties,
+	...toolOperationProperties,
 	...extraProperties,
 	customBodyCrawl,
 ];

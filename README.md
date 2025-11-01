@@ -19,7 +19,15 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Operations
 
-The **Firecrawl** node supports the following operations:
+The **Firecrawl** node supports the following operations in two modes:
+
+### Default Mode
+Standard Firecrawl operations with full UI controls and custom body options.
+
+### Tool Mode  
+AI Agent compatible operations with structured schemas for seamless integration with n8n's AI Agent system.
+
+**Available Operations:**
 
 ### Search
 - Search and optionally scrape search results
@@ -78,6 +86,59 @@ The **Firecrawl** node supports the following operations:
 ### Team Queue Status
 - Get your team’s current queue load (waiting, active, max concurrency)
 
+## AI Agent Integration
+
+The Firecrawl n8n node now supports **Tool Mode** for seamless integration with n8n's AI Agent system.
+
+### Tool Mode Features
+
+- **AI Agent Compatible**: Designed to work with n8n's AI Agent system
+- **Natural Language Prompts**: Use natural language to describe what you want to extract
+- **Structured Outputs**: Returns data in formats that AI agents can easily process
+- **Simplified Interface**: Streamlined parameters for AI-driven workflows
+
+### Using Tool Mode
+
+1. **Select Tool Resource**: Choose "Tool" from the Resource dropdown
+2. **Choose Operation**: Select from AI-optimized operations like Scrape, Search, Extract, etc.
+3. **Natural Language Input**: Use descriptive prompts instead of complex parameter configurations
+4. **AI Agent Integration**: The node automatically formats outputs for AI agent consumption
+
+### Tool Operations
+
+- **Scrape**: Extract content from URLs with AI-friendly formatting
+- **Search**: Web search with structured results for AI processing
+- **Extract**: AI-powered data extraction using natural language prompts
+- **Map**: Website discovery with AI-readable URL lists
+- **Crawl**: Comprehensive website crawling with AI-optimized outputs
+- **Batch Scrape**: Process multiple URLs efficiently for AI analysis
+- **Status Operations**: Monitor job progress with AI-readable status updates
+
+### Example Tool Usage
+
+```json
+{
+  "resource": "tool",
+  "operation": "scrape",
+  "url": "https://example.com",
+  "formats": ["markdown", "summary"],
+  "onlyMainContent": true
+}
+```
+
+### AI Agent Workflow Example
+
+```json
+{
+  "resource": "tool",
+  "operation": "extract",
+  "urls": ["https://news-site.com/article1", "https://news-site.com/article2"],
+  "prompt": "Extract the main headline, author, publication date, and key points from each article"
+}
+```
+
+This enables AI agents to easily scrape web content, extract structured data, and process it for further analysis or decision-making.
+
 ## Credentials
 
 To use the Firecrawl node, you need to:
@@ -102,6 +163,13 @@ To use the Firecrawl node, you need to:
 * [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 
 ## Version history
+
+### 1.0.7
+- Add Tool Node support for AI Agent compatibility
+- Support both Default and Tool resource modes
+- Tool schemas provide structured parameters for AI agents
+- Maintains full backward compatibility with existing workflows
+- Enables seamless integration with n8n's AI Agent system
 
 ### 1.0.6
 - Add support for additional Firecrawl endpoints:
