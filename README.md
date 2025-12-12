@@ -6,11 +6,12 @@ This is an n8n community node. It lets you use **[Firecrawl](https://firecrawl.d
 
 [n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-[Installation](#installation)  
-[Operations](#operations)  
-[Credentials](#credentials)  
-[Compatibility](#compatibility)  
-[Resources](#resources)  
+[Installation](#installation)
+[Operations](#operations)
+[AI Agent Tool Usage](#ai-agent-tool-usage)
+[Credentials](#credentials)
+[Compatibility](#compatibility)
+[Resources](#resources)
 [Version history](#version-history)  
 
 ## Installation
@@ -76,7 +77,60 @@ The **Firecrawl** node supports the following operations:
 - Get historical token usage for your team
 
 ### Team Queue Status
-- Get your team’s current queue load (waiting, active, max concurrency)
+- Get your team's current queue load (waiting, active, max concurrency)
+
+## AI Agent Tool Usage
+
+This node can be used as a tool with n8n's AI Agent node, allowing AI agents to scrape, crawl, and extract data from websites dynamically.
+
+### Requirements
+
+- **n8n version 1.79.0 or higher** is required for AI tool support
+- Set the environment variable `N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true` to enable community nodes as AI tools
+
+### Docker Configuration
+
+```yaml
+version: '3'
+services:
+  n8n:
+    image: n8nio/n8n
+    environment:
+      - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+    ports:
+      - "5678:5678"
+    volumes:
+      - ~/.n8n:/home/node/.n8n
+```
+
+### Using with AI Agents
+
+1. Add the **AI Agent** node to your workflow
+2. Connect the **Firecrawl** node as a tool input to the AI Agent
+3. The AI agent can now dynamically decide when and how to use Firecrawl operations
+
+### Dynamic Parameters with $fromAI()
+
+When using Firecrawl as an AI tool, you can let the AI agent decide parameter values dynamically using the `$fromAI()` function. Click the "Let the model define this parameter" button next to any field to enable this feature.
+
+Example expressions:
+```javascript
+// Let AI decide the URL to scrape
+{{ $fromAI("url", "The URL to scrape", "string") }}
+
+// Let AI decide the search query
+{{ $fromAI("query", "Search query for finding relevant pages", "string") }}
+
+// Let AI decide whether to include subdomains
+{{ $fromAI("includeSubdomains", "Whether to include subdomains", "boolean", false) }}
+```
+
+### Best Practices for AI Tool Usage
+
+1. **Use clear operation names**: The AI agent uses operation descriptions to decide when to use each tool
+2. **Provide context in prompts**: When using the Extract operation, provide clear prompts to guide data extraction
+3. **Set reasonable limits**: Configure default limits to prevent excessive API usage
+4. **Use the Map operation first**: For unknown sites, use Map to discover URLs before scraping
 
 ## Credentials
 
@@ -91,9 +145,11 @@ To use the Firecrawl node, you need to:
 
 ## Compatibility
 
-- Minimum n8n version: 1.0.0
-- Tested against n8n versions: 1.0.0, 1.1.0, 1.2.0
+- **Minimum n8n version: 1.79.0** (required for AI tool support)
+- Tested against n8n versions: 1.79.0+
 - Node.js version: 18 or higher
+
+> **Note**: If you don't need AI tool support, earlier versions of n8n may work, but 1.79.0+ is recommended.
 
 ## Resources
 
@@ -102,6 +158,14 @@ To use the Firecrawl node, you need to:
 * [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
 
 ## Version history
+
+### 1.1.0
+- **AI Agent Tool Support**: Node can now be used as a tool with n8n's AI Agent node
+  - Added `usableAsTool: true` to enable tool mode
+  - Enhanced all field descriptions for better AI context understanding
+  - Supports `$fromAI()` function for dynamic parameter values
+- Updated minimum n8n version requirement to 1.79.0
+- Improved operation descriptions for clearer AI agent decision making
 
 ### 1.0.6
 - Add support for additional Firecrawl endpoints:

@@ -1,4 +1,10 @@
-import { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
+import {
+	IDataObject,
+	IExecuteSingleFunctions,
+	IHttpRequestOptions,
+	INodeProperties,
+	INodePropertyOptions,
+} from 'n8n-workflow';
 import { buildPropertiesWithOptions } from '../helpers';
 
 /**
@@ -55,10 +61,13 @@ export function createUrlProperty(
 	resourceName: string = 'Default',
 ): INodeProperties {
 	return {
-		displayName: 'Url',
+		displayName: 'URL',
 		name: 'url',
 		type: 'string',
 		default: defaultUrl,
+		required: true,
+		description:
+			'The target webpage URL to scrape or crawl. Must be a valid HTTP/HTTPS URL (e.g., https://example.com). The URL should be publicly accessible or behind authentication configured in headers.',
 		routing: {
 			request: {
 				body: {
@@ -95,8 +104,9 @@ export function createActionsProperty(
 		typeOptions: {
 			multipleValues: true,
 		},
-		description: 'List of actions to interact with dynamic content before scraping',
-		placeholder: 'Add item',
+		description:
+			'Pre-scraping automation actions to interact with dynamic content. Use these to handle JavaScript-rendered pages, click buttons, fill forms, scroll to load more content, or wait for elements. Actions execute in order before content extraction.',
+		placeholder: 'Add action',
 		options: [
 			{
 				displayName: 'Items',
@@ -138,7 +148,8 @@ export function createActionsProperty(
 						displayName: 'Selector',
 						type: 'string',
 						default: '',
-						description: 'The CSS selector for `click` and `write` actions',
+						description:
+							'CSS selector to target an element (e.g., "#submit-btn", ".load-more", "[data-testid=login]"). Used for click, write, and scroll actions.',
 						name: 'selector',
 						displayOptions: {
 							show: {
@@ -150,7 +161,8 @@ export function createActionsProperty(
 						displayName: 'Milliseconds',
 						type: 'number',
 						default: 1000,
-						description: 'Milliseconds to wait for `wait` action',
+						description:
+							'Time to wait in milliseconds. Use this to allow JavaScript content to load or animations to complete. Typical values: 1000-3000ms for most pages, 5000ms+ for heavy SPAs.',
 						name: 'milliseconds',
 						displayOptions: {
 							show: {
@@ -174,7 +186,8 @@ export function createActionsProperty(
 						displayName: 'Text',
 						type: 'string',
 						default: '',
-						description: 'Text for `write` action',
+						description:
+							'Text to type into an input field. Use with selector to target the input element. Useful for search boxes, login forms, or any text input.',
 						name: 'text',
 						displayOptions: {
 							show: {
@@ -186,7 +199,8 @@ export function createActionsProperty(
 						displayName: 'Key',
 						type: 'string',
 						default: '',
-						description: 'Key for `press` action',
+						description:
+							'Keyboard key to press (e.g., "Enter", "Tab", "Escape", "ArrowDown"). Use for form submission, navigation, or triggering keyboard shortcuts.',
 						name: 'key',
 						displayOptions: {
 							show: {
@@ -261,7 +275,8 @@ export function createLocationProperty(
 		name: 'location',
 		type: 'fixedCollection',
 		default: {},
-		description: 'Location settings for the request',
+		description:
+			'Geographic location settings for the request. Use this to access geo-restricted content or see region-specific versions of websites. Affects IP geolocation and Accept-Language headers.',
 		options: [
 			{
 				displayName: 'Location Settings',
@@ -370,7 +385,8 @@ export function createIncludeTagsProperty(
 		typeOptions: {
 			multipleValues: true,
 		},
-		description: 'Specifies tags to include in the output',
+		description:
+			'HTML tags to retain in the output. Only content within these tags will be included. Useful for extracting specific sections like article content, product details, or main content areas.',
 		placeholder: 'Add tag to include',
 		options: [
 			{
@@ -430,33 +446,119 @@ export function createBatchUrlsProperty(
 	return {
 		displayName: 'URLs',
 		name: 'urls',
-		type: 'fixedCollection',
+		type: 'string',
 		typeOptions: {
-			multipleValues: true,
+			rows: 4,
 		},
-		default: {},
-		description: 'List of URLs to process in batch',
-		placeholder: 'Add URL',
-		options: [
-			{
-				name: 'urlValues',
-				displayName: 'URL',
-				values: [
-					{
-						displayName: 'URL',
-						name: 'url',
-						type: 'string',
-						default: defaultUrl,
-						description: 'URL to process',
-					},
-				],
-			},
-		],
+		default: defaultUrl,
+		required: true,
+		description:
+			'URLs to scrape in batch. Accepts multiple formats: a single URL, multiple URLs separated by commas or newlines, a JSON array like ["url1", "url2"], or an array expression from a previous node. Each URL is scraped independently with the same settings. Example: "https://example.com/page1, https://example.com/page2" or paste one URL per line.',
+		placeholder: 'https://example.com/page1\nhttps://example.com/page2',
 		routing: {
 			request: {
 				body: {
-					urls: '={{ $value.urlValues ? $value.urlValues.map(u => u.url) : [] }}',
+					urls: '={{ $value }}',
 				},
+			},
+			send: {
+				preSend: [
+					async function (
+						this: IExecuteSingleFunctions,
+						requestOptions: IHttpRequestOptions,
+					): Promise<IHttpRequestOptions> {
+						if (typeof requestOptions.body !== 'object' || !requestOptions.body) {
+							return requestOptions;
+						}
+
+						const body = requestOptions.body as IDataObject;
+
+						if (body.urls !== undefined) {
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+							let rawValue: any = body.urls;
+
+							// Helper to extract URLs from any input format
+							const extractUrls = (val: unknown): string[] => {
+								// Already an array - flatten and extract strings
+								if (Array.isArray(val)) {
+									return val.flatMap(extractUrls);
+								}
+
+								// String input - try various parsing strategies
+								if (typeof val === 'string') {
+									const trimmed = val.trim();
+									if (!trimmed) return [];
+
+									// Try parsing as JSON array first
+									if (trimmed.startsWith('[')) {
+										try {
+											const parsed = JSON.parse(trimmed);
+											return extractUrls(parsed);
+										} catch {
+											// Not valid JSON, continue with other methods
+										}
+									}
+
+									// Check for newlines (most common for pasted lists)
+									if (trimmed.includes('\n')) {
+										return trimmed
+											.split('\n')
+											.map((u) => u.trim())
+											.filter((u) => u && u.startsWith('http'));
+									}
+
+									// Check for comma separation
+									if (trimmed.includes(',')) {
+										return trimmed
+											.split(',')
+											.map((u) => u.trim())
+											.filter((u) => u && u.startsWith('http'));
+									}
+
+									// Check for space separation (multiple URLs)
+									if (trimmed.includes(' http')) {
+										return trimmed
+											.split(/\s+/)
+											.map((u) => u.trim())
+											.filter((u) => u && u.startsWith('http'));
+									}
+
+									// Single URL
+									if (trimmed.startsWith('http')) {
+										return [trimmed];
+									}
+
+									return [];
+								}
+
+								// Object with url property
+								if (typeof val === 'object' && val !== null && 'url' in val) {
+									const urlVal = (val as { url: unknown }).url;
+									if (typeof urlVal === 'string') {
+										return [urlVal];
+									}
+								}
+
+								return [];
+							};
+
+							const urlsArray = extractUrls(rawValue);
+
+							// Remove duplicates and empty values
+							const uniqueUrls = [...new Set(urlsArray)].filter(Boolean);
+
+							if (uniqueUrls.length === 0) {
+								throw new Error(
+									'At least one valid URL is required. Provide URLs as a single URL, comma-separated list, one per line, or a JSON array.',
+								);
+							}
+
+							body.urls = uniqueUrls;
+						}
+
+						return requestOptions;
+					},
+				],
 			},
 		},
 		displayOptions: {
@@ -488,7 +590,8 @@ export function createExcludeTagsProperty(
 		typeOptions: {
 			multipleValues: true,
 		},
-		description: 'Specifies tags to exclude from the output',
+		description:
+			'HTML tags to remove from the output. Content within these tags will be excluded. Common uses: removing navigation (nav), sidebars (aside), footers, ads, or cookie banners.',
 		placeholder: 'Add tag to exclude',
 		options: [
 			{
@@ -551,7 +654,8 @@ function createBatchSpecificProperties(): INodeProperties[] {
 			name: 'webhook',
 			type: 'fixedCollection',
 			default: {},
-			description: 'Webhook settings to receive notifications for batch scrape events',
+			description:
+				'Configure webhook notifications for batch job progress. Receive real-time updates when scraping starts, completes each page, finishes, or fails. Ideal for monitoring long-running jobs.',
 			options: [
 				{
 					displayName: 'Webhook Settings',
@@ -649,7 +753,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 			type: 'number',
 			default: 100,
 			description:
-				"Maximum number of concurrent scrapes. If not specified, adheres to your team's concurrency limit.",
+				'Maximum number of URLs to scrape simultaneously. Higher values speed up batch jobs but may trigger rate limits. Leave at default to use your team\'s plan limit.',
 		},
 		{
 			displayName: 'Ignore Invalid URLs',
@@ -657,7 +761,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 			type: 'boolean',
 			default: true,
 			description:
-				'Whether invalid URLs should be ignored. Instead of failing the entire request, a batch scrape using the remaining valid URLs will be created.',
+				'Continue processing valid URLs even if some are malformed or inaccessible. When disabled, the entire batch fails if any URL is invalid.',
 		},
 		{
 			displayName: 'Store In Cache',
@@ -665,7 +769,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 			type: 'boolean',
 			default: true,
 			description:
-				'Whether the page will be stored in the Firecrawl index and cache. Setting this to false is useful if your scraping activity may have data protection concerns.',
+				'Cache scraped pages for faster subsequent requests. Disable for privacy-sensitive scraping or when you need fresh data on every request.',
 		},
 		{
 			displayName: 'Zero Data Retention',
@@ -673,7 +777,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 			type: 'boolean',
 			default: false,
 			description:
-				'Whether to ensure no data is retained on the server after the scrape is complete',
+				'Delete all scraped data from Firecrawl servers immediately after returning results. Enable for maximum privacy compliance (GDPR, HIPAA). Requires special account access.',
 		},
 	];
 }
@@ -691,7 +795,8 @@ export function createScrapeOptionsProperty(
 		name: 'scrapeOptions',
 		type: 'fixedCollection',
 		default: {},
-		description: 'Options for scraping content during the crawl',
+		description:
+			'Configure how content is extracted from pages. Control output formats (markdown, HTML, JSON), content filtering, timing, caching, and browser emulation settings.',
 		options: [
 			{
 				displayName: 'Options',
@@ -705,7 +810,8 @@ export function createScrapeOptionsProperty(
 						typeOptions: {
 							multipleValues: true,
 						},
-						description: 'Output format(s) for the scraped data',
+						description:
+							'Output format(s) for scraped content. Use "Summary" when user wants a brief overview or summary of the page. Use "Markdown" for full content (best for AI/LLM). HTML preserves structure. JSON enables structured data extraction. Screenshot captures visual representation.',
 						placeholder: 'Add format',
 						options: [
 							{
@@ -717,39 +823,49 @@ export function createScrapeOptionsProperty(
 										name: 'type',
 										type: 'options',
 										default: 'markdown',
-										description: 'The type of format',
+										description:
+										'Output format for scraped content. Use "Summary" when user asks for a summary, overview, or condensed version of page content. Use "Markdown" for full content in AI-readable format.',
 										options: [
 											{
 												name: 'Change Tracking',
 												value: 'changeTracking',
+												description: 'Track changes between page versions over time',
 											},
 											{
 												name: 'HTML',
 												value: 'html',
+												description: 'Clean HTML with scripts and styles removed',
 											},
 											{
 												name: 'JSON',
 												value: 'json',
+												description: 'Extract structured data using AI with a schema',
 											},
 											{
 												name: 'Links',
 												value: 'links',
+												description: 'Extract all links from the page',
 											},
 											{
 												name: 'Markdown',
 												value: 'markdown',
+												description: 'Full page content as markdown - best for AI/LLM processing and reading full content',
 											},
 											{
 												name: 'Raw HTML',
 												value: 'rawHtml',
+												description: 'Original HTML including scripts and styles',
 											},
 											{
 												name: 'Screenshot',
 												value: 'screenshot',
+												description: 'Visual screenshot of the page as base64 image',
 											},
 											{
 												name: 'Summary',
 												value: 'summary',
+												description:
+													'AI-generated concise summary of page content - USE THIS when user asks for a summary, overview, brief description, or wants to quickly understand what a page is about',
 											},
 										],
 									},
@@ -911,7 +1027,7 @@ export function createScrapeOptionsProperty(
 						type: 'boolean',
 						default: true,
 						description:
-							'Whether to only return the main content of the page excluding headers, navs, footers, etc',
+							'When enabled, automatically removes navigation, headers, footers, sidebars, and other boilerplate content. Best for extracting article text or primary page content. Disable to capture the full page.',
 					},
 					createIncludeTagsProperty(operationName, true, useNestedScrapeOptions),
 					createExcludeTagsProperty(operationName, true, useNestedScrapeOptions),
@@ -920,7 +1036,8 @@ export function createScrapeOptionsProperty(
 						name: 'headers',
 						type: 'collection',
 						default: {},
-						description: 'Headers to send with the request',
+						description:
+							'Custom HTTP headers to send with the request. Use for authentication tokens, cookies, custom user-agents, or API keys required by the target website.',
 						options: [
 							{
 								displayName: 'Key',
@@ -943,28 +1060,32 @@ export function createScrapeOptionsProperty(
 						name: 'waitFor',
 						type: 'number',
 						default: 0,
-						description: 'Wait milliseconds for the page to load before fetching content',
+						description:
+							'Additional wait time in milliseconds after page load before extracting content. Use for JavaScript-heavy sites where content renders dynamically. 0 uses intelligent auto-detection.',
 					},
 					{
 						displayName: 'Mobile',
 						name: 'mobile',
 						type: 'boolean',
 						default: false,
-						description: 'Whether to emulate scraping from a mobile device',
+						description:
+							'Emulate a mobile device when scraping. Useful for sites with mobile-specific content, responsive layouts, or mobile-only features. Changes viewport and user-agent.',
 					},
 					{
 						displayName: 'Skip TLS Verification',
 						name: 'skipTlsVerification',
 						type: 'boolean',
 						default: false,
-						description: 'Whether to skip TLS certificate verification when making requests',
+						description:
+							'Bypass SSL/TLS certificate validation. Enable for sites with self-signed or expired certificates. Use with caution as it reduces security.',
 					},
 					{
 						displayName: 'Timeout (Ms)',
 						name: 'timeout',
 						type: 'number',
 						default: 30000,
-						description: 'Timeout in milliseconds for the request',
+						description:
+							'Maximum time in milliseconds to wait for the page to load. Increase for slow sites or complex pages. Default 30000ms (30 seconds).',
 					},
 					createActionsProperty(operationName, true, useNestedScrapeOptions),
 					createLocationProperty(operationName, true, useNestedScrapeOptions),
@@ -973,14 +1094,16 @@ export function createScrapeOptionsProperty(
 						name: 'removeBase64Images',
 						type: 'boolean',
 						default: true,
-						description: 'Whether to remove base64 encoded images from the output',
+						description:
+							'Strip embedded base64 images from output while preserving alt text. Reduces output size significantly. Disable if you need inline image data.',
 					},
 					{
 						displayName: 'Block Ads',
 						name: 'blockAds',
 						type: 'boolean',
 						default: true,
-						description: 'Whether to enables ad-blocking and cookie popup blocking',
+						description:
+							'Enable ad-blocking and cookie consent popup blocking for cleaner content extraction. Recommended for most scraping tasks.',
 					},
 					{
 						displayName: 'Store In Cache',
@@ -988,14 +1111,15 @@ export function createScrapeOptionsProperty(
 						type: 'boolean',
 						default: true,
 						description:
-							'Whether to store the page in the Firecrawl index and cache. Disable for data protection concerns or when using sensitive scraping parameters.',
+							'Cache the scraped page for faster subsequent requests. Disable for real-time data needs, sensitive content, or when privacy is a concern.',
 					},
 					{
 						displayName: 'Proxy',
 						name: 'proxy',
 						type: 'options',
 						default: 'basic',
-						description: 'Specifies the type of proxy to use',
+						description:
+							'Proxy strategy for bypassing anti-bot measures. Basic is faster and cheaper. Stealth uses residential proxies for better success on protected sites.',
 						options: [
 							{
 								name: 'Basic',

@@ -13,10 +13,11 @@ export class Firecrawl implements INodeType {
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Get data from Firecrawl API',
+		description: 'Scrape, crawl, map, search, and extract structured data from websites using Firecrawl API',
 		defaults: {
 			name: 'Firecrawl',
 		},
+		usableAsTool: true,
 		inputs: `={{["main"]}}`,
 		outputs: `={{["main"]}}`,
 		credentials: [

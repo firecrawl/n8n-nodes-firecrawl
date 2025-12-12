@@ -13,7 +13,7 @@ import {
 
 // Define the operation name and display name
 export const name = 'scrape';
-export const displayName = 'Scrape a url and get its content';
+export const displayName = 'Scrape a URL and get its content as markdown, summary, or other formats';
 export const operationName = 'scrape';
 
 /**
@@ -30,16 +30,83 @@ function createParsersProperty(operationName: string): INodeProperties {
 			{
 				name: 'PDF',
 				value: 'pdf',
+				description: 'Extract PDF content as markdown (1 credit per page)',
 			},
 		],
 		default: [],
 		description:
-			'Controls how PDF files are processed during scraping. When PDF parser is enabled, the PDF content is extracted and converted to markdown format, with billing based on the number of pages (1 credit per page). When disabled, the PDF file is returned in base64 encoding with a flat rate of 1 credit total.',
+			'Enable file parsers for content extraction. Select "PDF" to extract PDF content as markdown text. Leave empty to get PDFs as base64 data.',
 		routing: {
 			request: {
 				body: {
 					parsers: '={{ $value }}',
 				},
+			},
+			send: {
+				preSend: [
+					async function (
+						this: IExecuteSingleFunctions,
+						requestOptions: IHttpRequestOptions,
+					): Promise<IHttpRequestOptions> {
+						if (typeof requestOptions.body !== 'object' || !requestOptions.body) {
+							return requestOptions;
+						}
+
+						const body = requestOptions.body as IDataObject;
+
+						// Transform parsers to the correct API format: [{ type: "pdf" }]
+						if (body.parsers !== undefined) {
+							// eslint-disable-next-line @typescript-eslint/no-explicit-any
+							let rawValue: any = body.parsers;
+
+							// Flatten nested arrays (handles cases like [["pdf"]] or [[["pdf"]]])
+							while (Array.isArray(rawValue) && rawValue.length === 1 && Array.isArray(rawValue[0])) {
+								rawValue = rawValue[0];
+							}
+
+							// Extract string values from the input
+							const extractStrings = (val: unknown): string[] => {
+								if (typeof val === 'string') {
+									// Try to parse as JSON first
+									try {
+										const parsed = JSON.parse(val);
+										return extractStrings(parsed);
+									} catch {
+										// Not JSON, treat as single value
+										return val.trim() ? [val.trim().toLowerCase()] : [];
+									}
+								}
+								if (Array.isArray(val)) {
+									return val.flatMap(extractStrings);
+								}
+								if (typeof val === 'object' && val !== null && 'type' in val) {
+									const typeVal = (val as { type: unknown }).type;
+									if (typeof typeVal === 'string') {
+										return [typeVal.toLowerCase()];
+									}
+								}
+								return [];
+							};
+
+							const parsersArray = extractStrings(rawValue);
+
+							// Filter to valid parser types and deduplicate
+							const validParsers = ['pdf'];
+							const uniqueParsers = [...new Set(parsersArray)].filter((p) =>
+								validParsers.includes(p),
+							);
+
+							// Remove if empty, otherwise convert to API format
+							if (uniqueParsers.length === 0) {
+								delete body.parsers;
+							} else {
+								body.parsers = uniqueParsers.map((parser) => ({ type: parser }));
+							}
+						}
+
+						return requestOptions;
+					},
+				],
 			},
 		},
 		displayOptions: {
