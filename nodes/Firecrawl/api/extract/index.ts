@@ -7,7 +7,7 @@ import {
 import { buildApiProperties, createOperationNotice, createScrapeOptionsProperty } from '../common';
 
 const name = 'extract';
-const displayName = 'Extract Data';
+const displayName = 'Extract structured data from websites using AI';
 export const operationName = 'extract';
 
 /**
@@ -23,8 +23,9 @@ function createUrlsProperty(): INodeProperties {
 		typeOptions: {
 			multipleValues: true,
 		},
-		description: 'The URLs to extract data from. URLs should be in glob format.',
-		placeholder: 'Add URL',
+		description:
+			'URLs to extract data from. Supports glob patterns like "https://example.com/products/*" to extract from multiple pages matching the pattern.',
+		placeholder: 'Add URL pattern',
 		options: [
 			{
 				displayName: 'Items',
@@ -67,7 +68,8 @@ function createPromptProperty(): INodeProperties {
 		name: 'prompt',
 		type: 'string',
 		default: '',
-		description: 'Prompt to guide the extraction process',
+		description:
+			'Natural language instructions for the AI to guide data extraction. Be specific about what data you want (e.g., "Extract product names, prices, and descriptions from this e-commerce page").',
 		routing: {
 			request: {
 				body: {
@@ -97,7 +99,8 @@ function createSchemaProperty(): INodeProperties {
 		name: 'schema',
 		type: 'json',
 		default: '{\n  "property1": "string",\n  "property2": "number"\n}',
-		description: 'Schema to define the structure of the extracted data',
+		description:
+			'JSON Schema defining the structure of extracted data. Specify property names and types (string, number, boolean, array, object). The AI will extract data matching this schema.',
 		routing: {
 			request: {
 				body: {
@@ -123,7 +126,8 @@ function createEnableWebSearchProperty(): INodeProperties {
 		name: 'enableWebSearch',
 		type: 'boolean',
 		default: false,
-		description: 'Whether to enable web search to find additional data',
+		description:
+			'Allow the AI to search the web for additional information not found on the page. Useful for enriching extracted data with external context.',
 		routing: {
 			request: {
 				body: {
@@ -149,7 +153,8 @@ function createIgnoreSitemapProperty(): INodeProperties {
 		name: 'ignoreSitemap',
 		type: 'boolean',
 		default: true,
-		description: 'Whether to ignore the website sitemap when crawling',
+		description:
+			'Skip the sitemap when discovering URLs matching your glob pattern. Enable for faster extraction when you know the exact URL patterns you want.',
 		routing: {
 			request: {
 				body: {
@@ -175,7 +180,8 @@ function createIncludeSubdomainsProperty(): INodeProperties {
 		name: 'includeSubdomains',
 		type: 'boolean',
 		default: false,
-		description: 'Whether to include subdomains of the website',
+		description:
+			'Extract data from subdomains matching your URL patterns. Enable to include blog.example.com or docs.example.com when extracting from example.com.',
 		routing: {
 			request: {
 				body: {
@@ -201,7 +207,8 @@ function createShowSourcesProperty(): INodeProperties {
 		name: 'showSources',
 		type: 'boolean',
 		default: false,
-		description: 'Whether to show the sources used to extract the data',
+		description:
+			'Include source URLs and page sections where each piece of data was found. Useful for verification, citation, or debugging extraction results.',
 		routing: {
 			request: {
 				body: {

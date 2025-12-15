@@ -13,7 +13,7 @@ import {
 
 // Define the operation name and display name
 export const name = 'crawl';
-export const displayName = 'Crawl a website';
+export const displayName = 'Crawl a website and scrape all pages';
 export const operationName = 'crawl';
 
 /**
@@ -35,8 +35,8 @@ function createExcludePathsProperty(
 			multipleValues: true,
 		},
 		description:
-			'Specifies URL patterns to exclude from the crawl by comparing website paths against the provided regex patterns',
-		placeholder: 'Add path to exclude',
+			'URL path patterns to skip during crawling. Use glob patterns like "blog/*" to exclude sections. Useful for avoiding large archives, user-generated content, or irrelevant pages.',
+		placeholder: 'Add path pattern to exclude',
 		options: [
 			{
 				displayName: 'Items',
@@ -94,8 +94,8 @@ function createIncludePathsProperty(
 			multipleValues: true,
 		},
 		description:
-			'Specifies URL patterns to include in the crawl by comparing website paths against the provided regex patterns',
-		placeholder: 'Add path to include',
+			'URL path patterns to include in the crawl. Only pages matching these patterns will be scraped. Use glob patterns like "docs/*" to focus on specific sections.',
+		placeholder: 'Add path pattern to include',
 		options: [
 			{
 				displayName: 'Items',
@@ -149,7 +149,8 @@ function createLimitProperty(operationName: string): INodeProperties {
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-limit
 		default: 500,
-		description: 'Max number of results to return',
+		description:
+			'Maximum number of pages to crawl. Use lower limits for testing or to stay within budget. The crawl stops when this limit is reached or all discoverable pages are processed.',
 		routing: {
 			request: {
 				body: {
@@ -183,7 +184,8 @@ function createDelayProperty(operationName: string): INodeProperties {
 			minValue: 0,
 		},
 		default: 0,
-		description: 'Delay between requests in milliseconds',
+		description:
+			'Wait time in milliseconds between scraping each page. Use to be polite to servers or avoid rate limiting. 0 means no delay between requests.',
 		routing: {
 			request: {
 				body: {
@@ -240,7 +242,7 @@ function createMaxConcurrencyProperty(operationName: string): INodeProperties {
 		// IMPORTANT: We don't support 100 concurrent scrapes, but we're setting a high default to avoid issues
 		default: 100,
 		description:
-			"Maximum number of concurrent scrapes. This parameter allows you to set a concurrency limit for this crawl. If not specified, the crawl adheres to your team's concurrency limit.",
+			'Maximum number of pages to scrape simultaneously. Higher values complete faster but may trigger rate limits on target sites. Use your team\'s plan limit by default.',
 		routing: {
 			request: {
 				body: {
@@ -271,7 +273,8 @@ function createPromptProperty(operationName: string): INodeProperties {
 		name: 'prompt',
 		type: 'string',
 		default: '',
-		description: 'Prompt to use for the crawl',
+		description:
+			'Natural language instructions to guide the crawl. Use to specify what content to focus on, pages to prioritize, or extraction goals (e.g., "Focus on product pages and pricing information").',
 		routing: {
 			request: {
 				body: {
@@ -309,7 +312,8 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				name: 'ignoreSitemap',
 				type: 'boolean',
 				default: false,
-				description: 'Whether to ignore the website sitemap when crawling',
+				description:
+					'Skip reading the website\'s sitemap.xml. Enable if the sitemap is inaccurate, outdated, or you want to discover pages through link following only.',
 				routing: {
 					request: {
 						body: {
@@ -324,7 +328,7 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				type: 'boolean',
 				default: false,
 				description:
-					'Whether to ignore the query parameters - not re-scrape the same path with different (or none)',
+					'Treat URLs with different query parameters as the same page. Enable to avoid duplicate scrapes of pages like /products?page=1 and /products?page=2.',
 				routing: {
 					request: {
 						body: {
@@ -338,7 +342,8 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				name: 'allowExternalLinks',
 				type: 'boolean',
 				default: false,
-				description: 'Whether to allow the crawler to follow links to external websites',
+				description:
+					'Follow links to other domains during the crawl. Use with caution as this can significantly expand the crawl scope and credit usage.',
 				routing: {
 					request: {
 						body: {
@@ -353,7 +358,7 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				type: 'boolean',
 				default: false,
 				description:
-					'Whether to allow the crawler to follow links to subdomains of the main domain',
+					'Include subdomains like blog.example.com or docs.example.com when crawling example.com. Enable to capture content across the entire domain ecosystem.',
 				routing: {
 					request: {
 						body: {

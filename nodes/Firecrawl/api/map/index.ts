@@ -8,7 +8,7 @@ import { buildApiProperties, createOperationNotice, createUrlProperty } from '..
 
 // Define the operation name and display name
 export const name = 'map';
-export const displayName = 'Map a website and get urls';
+export const displayName = 'Map a website to discover all URLs';
 export const operationName = 'map';
 
 function createSitemapProperty(): INodeProperties {
@@ -20,21 +20,22 @@ function createSitemapProperty(): INodeProperties {
 			{
 				name: 'Include',
 				value: 'include',
-				description: 'Include sitemap when crawling (default)',
+				description: 'Use sitemap plus link discovery (default, most comprehensive)',
 			},
 			{
 				name: 'Only',
 				value: 'only',
-				description: 'Only return links found in the website sitemap',
+				description: 'Only return URLs from sitemap.xml (fastest, but may miss pages)',
 			},
 			{
 				name: 'Skip',
 				value: 'skip',
-				description: 'Ignore the website sitemap when crawling',
+				description: 'Ignore sitemap, discover pages through links only',
 			},
 		],
 		default: 'include',
-		description: 'How to handle the website sitemap during crawling',
+		description:
+			'Control how URLs are discovered. "Include" combines sitemap with link crawling for best coverage. "Only" is fastest but limited to sitemap. "Skip" relies purely on link following.',
 		routing: {
 			request: {
 				body: {
@@ -60,7 +61,8 @@ function createIncludeSubdomainsProperty(): INodeProperties {
 		name: 'includeSubdomains',
 		type: 'boolean',
 		default: false,
-		description: 'Whether to include subdomains of the website',
+		description:
+			'Discover URLs on subdomains like blog.example.com or docs.example.com. Enable to map the entire domain ecosystem, not just the main domain.',
 		routing: {
 			request: {
 				body: {
@@ -92,7 +94,8 @@ function createLimitProperty(): INodeProperties {
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-limit
 		default: 5000,
-		description: 'Max number of results to return',
+		description:
+			'Maximum number of URLs to return. Large sites may have thousands of pages. Use lower limits for initial exploration or to reduce response size.',
 		routing: {
 			request: {
 				body: {
@@ -118,7 +121,8 @@ function createTimeoutProperty(): INodeProperties {
 		name: 'timeout',
 		type: 'number',
 		default: 10000,
-		description: 'Timeout in milliseconds for the request',
+		description:
+			'Maximum time in milliseconds to wait for URL discovery. Increase for large sites or slow connections. Default 10000ms (10 seconds).',
 		routing: {
 			request: {
 				body: {

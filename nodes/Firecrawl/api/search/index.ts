@@ -9,7 +9,7 @@ import { createOperationNotice } from '../common';
 
 // Define the operation name and display name
 export const name = 'search';
-export const displayName = 'Search and optionally scrape search results';
+export const displayName = 'Search the web and scrape results';
 export const operationName = 'search';
 
 /**
@@ -22,7 +22,8 @@ function createQueryProperty(operationName: string): INodeProperties {
 		type: 'string',
 		default: '',
 		required: true,
-		description: 'The search query',
+		description:
+			'The search query to find relevant web pages. Use natural language like you would in a search engine. Results are scraped and returned with their content.',
 		routing: {
 			request: {
 				body: {
@@ -51,7 +52,8 @@ function createLimitProperty(operationName: string): INodeProperties {
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-limit
 		default: 5,
-		description: 'Max number of results to return',
+		description:
+			'Maximum number of search results to return and scrape. Higher limits provide more comprehensive results but use more credits. Range: 1-100.',
 		routing: {
 			request: {
 				body: {
@@ -88,18 +90,22 @@ function createSourcesProperty(
 			{
 				name: 'Web',
 				value: 'web',
+				description: 'Search general web pages',
 			},
 			{
 				name: 'Images',
 				value: 'images',
+				description: 'Search for images',
 			},
 			{
 				name: 'News',
 				value: 'news',
+				description: 'Search news articles',
 			},
 		],
 		default: ['web'],
-		description: 'Specifies the sources to search from. At least one source must be selected.',
+		description:
+			'Types of content to search. Web returns general pages, News focuses on recent articles, Images finds visual content. Select at least one source.',
 		routing: {
 			request: {
 				body: {
@@ -151,7 +157,8 @@ function createTimeBasedSearchProperty(operation: string): INodeProperties {
 		name: 'tbs',
 		type: 'string',
 		default: '',
-		description: 'Time-based search parameter',
+		description:
+			'Filter results by time. Use "qdr:h" for past hour, "qdr:d" for past day, "qdr:w" for past week, "qdr:m" for past month, "qdr:y" for past year. Leave empty for all time.',
 		routing: {
 			request: {
 				body: {
@@ -244,7 +251,8 @@ function createTimeoutProperty(operationName: string): INodeProperties {
 		name: 'timeout',
 		type: 'number',
 		default: 60000,
-		description: 'Timeout in milliseconds for the request',
+		description:
+			'Maximum time in milliseconds to wait for search results and scraping to complete. Increase for more results or slow connections. Default 60000ms (60 seconds).',
 		routing: {
 			request: {
 				body: {
