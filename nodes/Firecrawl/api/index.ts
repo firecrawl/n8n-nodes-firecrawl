@@ -33,6 +33,11 @@ import {
 	options as getExtractStatusOptions,
 	properties as getExtractStatusProperties,
 } from './getExtractStatus';
+import { options as agentOptions, properties as agentProperties } from './agent';
+import {
+	options as getAgentStatusOptions,
+	properties as getAgentStatusProperties,
+} from './getAgentStatus';
 import {
 	options as teamTokenUsageOptions,
 	properties as teamTokenUsageProperties,
@@ -77,6 +82,8 @@ const operationOptions: INodePropertyOptions[] = [
 	getCrawlStatusOptions,
 	extractOptions,
 	getExtractStatusOptions,
+	agentOptions,
+	getAgentStatusOptions,
 	teamTokenUsageOptions,
 	teamCreditUsageOptions,
 	teamTokenUsageHistoricalOptions,
@@ -103,6 +110,8 @@ const rawProperties: INodeProperties[] = [
 	...getCrawlStatusProperties,
 	...extractProperties,
 	...getExtractStatusProperties,
+	...agentProperties,
+	...getAgentStatusProperties,
 	...teamTokenUsageProperties,
 	...teamCreditUsageProperties,
 	...teamTokenUsageHistoricalProperties,
@@ -203,6 +212,16 @@ export const apiMethods = {
 			},
 		},
 		getExtractStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		agent: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getAgentStatus: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
