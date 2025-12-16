@@ -383,9 +383,17 @@ options.routing = {
 				while (status === 'processing' || status === 'pending') {
 					// Check for timeout
 					if (Date.now() - startTime > maxWaitTimeMs) {
-						throw new Error(
-							`Agent job timed out after ${maxWaitTimeSeconds} seconds. Job ID: ${jobId}. You can check the status manually using the "Get Agent Status" operation.`,
-						);
+						return [
+							{
+								json: {
+									success: false,
+									status: 'timeout',
+									error: `Agent job timed out after ${maxWaitTimeSeconds} seconds`,
+									jobId,
+									message: 'You can check the status manually using the "Get Agent Status" operation.',
+								},
+							},
+						];
 					}
 
 					// Wait before polling
@@ -417,9 +425,18 @@ options.routing = {
 					}
 
 					if (!statusResponse) {
-						throw new Error(
-							`Failed to poll agent status after ${MAX_POLL_RETRIES} attempts. Job ID: ${jobId}. Last error: ${lastError?.message || 'Unknown error'}. You can check the status manually using the "Get Agent Status" operation.`,
-						);
+						return [
+							{
+								json: {
+									success: false,
+									status: 'poll_failed',
+									error: `Failed to poll agent status after ${MAX_POLL_RETRIES} attempts`,
+									jobId,
+									lastError: lastError?.message || 'Unknown error',
+									message: 'You can check the status manually using the "Get Agent Status" operation.',
+								},
+							},
+						];
 					}
 
 					status = statusResponse.status as string;
