@@ -131,6 +131,54 @@ export const extraProperties: INodeProperties[] = [
 			},
 		},
 	},
+	{
+		displayName: 'Custom Body',
+		name: 'customBody',
+		type: 'json',
+		default: '{\n  "prompt": "Find the founders of Firecrawl",\n  "urls": ["https://firecrawl.dev"],\n  "schema": {\n    "type": "object",\n    "properties": {\n      "founders": {\n        "type": "array",\n        "items": {\n          "type": "object",\n          "properties": {\n            "name": { "type": "string" },\n            "role": { "type": "string" }\n          }\n        }\n      }\n    }\n  }\n}',
+		description: 'Custom body to send to the Agent endpoint',
+		routing: {
+			request: {
+				body: {
+					customBody: '={{JSON.parse($value)}}',
+				},
+			},
+			send: {
+				preSend: [preSendActionCustomBody],
+			},
+		},
+		displayOptions: {
+			show: {
+				useCustomBody: [true],
+				resource: ['Agent'],
+				operation: ['agent'],
+			},
+		},
+	},
+	{
+		displayName: 'Custom Body',
+		name: 'customBody',
+		type: 'json',
+		default: '{\n  "prompt": "Find the founders of Firecrawl",\n  "urls": ["https://firecrawl.dev"],\n  "schema": {\n    "type": "object",\n    "properties": {\n      "founders": {\n        "type": "array",\n        "items": {\n          "type": "object",\n          "properties": {\n            "name": { "type": "string" },\n            "role": { "type": "string" }\n          }\n        }\n      }\n    }\n  }\n}',
+		description: 'Custom body to send to the Agent Async endpoint',
+		routing: {
+			request: {
+				body: {
+					customBody: '={{JSON.parse($value)}}',
+				},
+			},
+			send: {
+				preSend: [preSendActionCustomBody],
+			},
+		},
+		displayOptions: {
+			show: {
+				useCustomBody: [true],
+				resource: ['Agent'],
+				operation: ['agentAsync'],
+			},
+		},
+	},
 ];
 
 /**
