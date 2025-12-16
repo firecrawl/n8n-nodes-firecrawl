@@ -3,9 +3,10 @@ import { buildApiProperties, createOperationNotice } from '../common';
 
 export const name = 'crawlActive';
 export const displayName = 'List active crawls';
+export const resourceName = 'Crawling';
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice('Default', name, 'GET')];
+	return [createOperationNotice(resourceName, name, 'GET')];
 }
 
 const { options, properties } = buildApiProperties(name, displayName, createProperties());

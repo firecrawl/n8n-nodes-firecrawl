@@ -15,6 +15,7 @@ import {
 export const name = 'batchScrape';
 export const displayName = 'Batch scrape multiple URLs simultaneously';
 export const operationName = 'batchScrape';
+export const resourceName = 'Scraping';
 
 /**
  * Creates the parsers property
@@ -114,7 +115,7 @@ function createParsersProperty(operationName: string): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -195,16 +196,16 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
 function createScrapeProperties(): INodeProperties[] {
 	return [
 		// Operation notice
-		createOperationNotice('Default', name, 'POST'),
+		createOperationNotice(resourceName, name, 'POST'),
 
 		// URL input
-		createBatchUrlsProperty(name, 'https://firecrawl.dev'),
+		createBatchUrlsProperty(name, '', resourceName),
 
 		// Parsers
 		createParsersProperty(operationName),
 
 		// Scrape options with batch-specific properties
-		createScrapeOptionsProperty(operationName, false, true),
+		createScrapeOptionsProperty(operationName, false, true, resourceName),
 	];
 }
 

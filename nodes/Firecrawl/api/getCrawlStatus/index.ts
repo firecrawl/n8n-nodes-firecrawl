@@ -4,8 +4,8 @@ import { buildApiProperties, createOperationNotice /* createUrlProperty */ } fro
 // Define the operation name and display name
 export const name = 'getCrawlStatus';
 export const displayName = 'Get crawl status';
-
 export const operationName = 'getCrawlStatus';
+export const resourceName = 'Crawling';
 
 /**
  * Creates the crawl ID property
@@ -27,7 +27,7 @@ function createCrawlIdProperty(): INodeProperties {
 		},
 		displayOptions: {
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -40,7 +40,7 @@ function createCrawlIdProperty(): INodeProperties {
 function createGetCrawlStatusProperties(): INodeProperties[] {
 	return [
 		// Operation notice
-		createOperationNotice('Default', name, 'GET'),
+		createOperationNotice(resourceName, name, 'GET'),
 
 		// Crawl ID input
 		createCrawlIdProperty(),

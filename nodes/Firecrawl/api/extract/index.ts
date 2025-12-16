@@ -9,6 +9,7 @@ import { buildApiProperties, createOperationNotice, createScrapeOptionsProperty 
 const name = 'extract';
 const displayName = 'Extract structured data from websites using AI';
 export const operationName = 'extract';
+export const resourceName = 'Extract';
 
 /**
  * Creates the URLs property
@@ -51,7 +52,7 @@ function createUrlsProperty(): INodeProperties {
 		},
 		displayOptions: {
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -82,7 +83,7 @@ function createPromptProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -113,7 +114,7 @@ function createSchemaProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -140,7 +141,7 @@ function createEnableWebSearchProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -167,7 +168,7 @@ function createIgnoreSitemapProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -194,7 +195,7 @@ function createIncludeSubdomainsProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -221,7 +222,7 @@ function createShowSourcesProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -302,7 +303,7 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
  */
 function createExtractProperties(): INodeProperties[] {
 	return [
-		createOperationNotice('Default', name, 'POST'),
+		createOperationNotice(resourceName, name, 'POST'),
 		createUrlsProperty(),
 		createPromptProperty(),
 		createSchemaProperty(),
@@ -310,7 +311,7 @@ function createExtractProperties(): INodeProperties[] {
 		createIncludeSubdomainsProperty(),
 		createEnableWebSearchProperty(),
 		createShowSourcesProperty(),
-		createScrapeOptionsProperty(operationName),
+		createScrapeOptionsProperty(operationName, true, false, resourceName),
 	];
 }
 

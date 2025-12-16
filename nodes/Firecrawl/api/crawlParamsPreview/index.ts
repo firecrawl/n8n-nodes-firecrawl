@@ -3,6 +3,7 @@ import { buildApiProperties, createOperationNotice, createUrlProperty } from '..
 
 export const name = 'crawlParamsPreview';
 export const displayName = 'Preview crawl params from prompt';
+export const resourceName = 'Crawling';
 
 function createPromptProperty(): INodeProperties {
 	return {
@@ -21,7 +22,7 @@ function createPromptProperty(): INodeProperties {
 		},
 		displayOptions: {
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [name],
 			},
 		},
@@ -29,7 +30,7 @@ function createPromptProperty(): INodeProperties {
 }
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice('Default', name), createUrlProperty(name), createPromptProperty()];
+	return [createOperationNotice(resourceName, name), createUrlProperty(name, undefined, resourceName), createPromptProperty()];
 }
 
 const { options, properties } = buildApiProperties(name, displayName, createProperties());

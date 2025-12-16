@@ -15,6 +15,7 @@ import {
 export const name = 'scrape';
 export const displayName = 'Scrape a URL and get its content as markdown, summary, or other formats';
 export const operationName = 'scrape';
+export const resourceName = 'Scraping';
 
 /**
  * Creates the parsers property
@@ -114,7 +115,7 @@ function createParsersProperty(operationName: string): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -195,16 +196,16 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
 function createScrapeProperties(): INodeProperties[] {
 	return [
 		// Operation notice
-		createOperationNotice('Default', name),
+		createOperationNotice(resourceName, name),
 
 		// URL input
-		createUrlProperty(name, 'https://firecrawl.dev'),
+		createUrlProperty(name, 'https://firecrawl.dev', resourceName),
 
 		// Parsers
 		createParsersProperty(operationName),
 
 		// Scrape options
-		createScrapeOptionsProperty(operationName, false),
+		createScrapeOptionsProperty(operationName, false, false, resourceName),
 	];
 }
 

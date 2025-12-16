@@ -4,6 +4,7 @@ import { buildApiProperties, createOperationNotice } from '../common';
 const name = 'getExtractStatus';
 const displayName = 'Get Extract Status';
 export const operationName = 'getExtractStatus';
+export const resourceName = 'Extract';
 
 /**
  * Creates the extract ID property
@@ -25,7 +26,7 @@ function createExtractIdProperty(): INodeProperties {
 		},
 		displayOptions: {
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -37,7 +38,7 @@ function createExtractIdProperty(): INodeProperties {
  * @returns Array of properties for the get extract status operation
  */
 function createGetExtractStatusProperties(): INodeProperties[] {
-	return [createOperationNotice('Default', name, 'GET'), createExtractIdProperty()];
+	return [createOperationNotice(resourceName, name, 'GET'), createExtractIdProperty()];
 }
 
 // Build and export the properties and options

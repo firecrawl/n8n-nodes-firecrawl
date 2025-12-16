@@ -19,7 +19,22 @@ import { apiMethods } from './api';
  * @returns The combined methods object that implements INodeType['methods']
  */
 export const allMethods = {
-	Default: {
-		...apiMethods.Default,
+	Scraping: {
+		...apiMethods.Scraping,
+	},
+	Crawling: {
+		...apiMethods.Crawling,
+	},
+	Agent: {
+		...apiMethods.Agent,
+	},
+	MapSearch: {
+		...apiMethods.MapSearch,
+	},
+	Account: {
+		...apiMethods.Account,
+	},
+	Extract: {
+		...apiMethods.Extract,
 	},
 } as INodeType['methods'];
