@@ -4,7 +4,7 @@ import {
 	IHttpRequestOptions,
 	INodeProperties,
 } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties, createOperationNotice, extractUrls, convertToSchema } from '../common';
 
 const name = 'agentAsync';
 const displayName = 'Agent (Async) - Returns job ID for manual polling';
@@ -41,7 +41,7 @@ function createPromptProperty(): INodeProperties {
 			},
 			show: {
 				resource: [resourceName],
-				operation: ['agentAsync'],
+				operation: [operationName],
 			},
 		},
 	};
@@ -65,7 +65,7 @@ function createSpecifyUrlsProperty(): INodeProperties {
 			},
 			show: {
 				resource: [resourceName],
-				operation: ['agentAsync'],
+				operation: [operationName],
 			},
 		},
 	};
@@ -106,79 +106,13 @@ function createUrlsProperty(): INodeProperties {
 						const body = requestOptions.body as IDataObject;
 
 						if (body.urls !== undefined) {
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-							let rawValue: any = body.urls;
+							const rawValue = body.urls;
 
 							// If empty string or null/undefined, remove urls from body
 							if (!rawValue || (typeof rawValue === 'string' && !rawValue.trim())) {
 								delete body.urls;
 								return requestOptions;
 							}
-
-							// Helper to extract URLs from any input format
-							const extractUrls = (val: unknown): string[] => {
-								// Already an array - flatten and extract strings
-								if (Array.isArray(val)) {
-									return val.flatMap(extractUrls);
-								}
-
-								// String input - try various parsing strategies
-								if (typeof val === 'string') {
-									const trimmed = val.trim();
-									if (!trimmed) return [];
-
-									// Try parsing as JSON array first
-									if (trimmed.startsWith('[')) {
-										try {
-											const parsed = JSON.parse(trimmed);
-											return extractUrls(parsed);
-										} catch {
-											// Not valid JSON, continue with other methods
-										}
-									}
-
-									// Check for newlines (most common for pasted lists)
-									if (trimmed.includes('\n')) {
-										return trimmed
-											.split('\n')
-											.map((u) => u.trim())
-											.filter((u) => u && u.startsWith('http'));
-									}
-
-									// Check for comma separation
-									if (trimmed.includes(',')) {
-										return trimmed
-											.split(',')
-											.map((u) => u.trim())
-											.filter((u) => u && u.startsWith('http'));
-									}
-
-									// Check for space separation (multiple URLs)
-									if (trimmed.includes(' http')) {
-										return trimmed
-											.split(/\s+/)
-											.map((u) => u.trim())
-											.filter((u) => u && u.startsWith('http'));
-									}
-
-									// Single URL
-									if (trimmed.startsWith('http')) {
-										return [trimmed];
-									}
-
-									return [];
-								}
-
-								// Object with url property
-								if (typeof val === 'object' && val !== null && 'url' in val) {
-									const urlVal = (val as { url: unknown }).url;
-									if (typeof urlVal === 'string') {
-										return [urlVal];
-									}
-								}
-
-								return [];
-							};
 
 							const urlsArray = extractUrls(rawValue);
 
@@ -204,7 +138,7 @@ function createUrlsProperty(): INodeProperties {
 			},
 			show: {
 				resource: [resourceName],
-				operation: ['agentAsync'],
+				operation: [operationName],
 				specifyUrls: [true],
 			},
 		},
@@ -234,7 +168,7 @@ function createSchemaTypeProperty(): INodeProperties {
 				description: 'Generate a schema from an example JSON object',
 			},
 			{
-				name: 'Define using JSON Schema',
+				name: 'Define Using JSON Schema',
 				value: 'manual',
 				description: 'Define the JSON schema manually',
 			},
@@ -245,7 +179,7 @@ function createSchemaTypeProperty(): INodeProperties {
 			},
 			show: {
 				resource: [resourceName],
-				operation: ['agentAsync'],
+				operation: [operationName],
 			},
 		},
 	};
@@ -296,44 +230,6 @@ function createJsonExampleProperty(): INodeProperties {
 									example = body.jsonExample;
 								}
 
-								// Convert the example to a JSON Schema
-								const convertToSchema = (value: unknown): Record<string, unknown> => {
-									if (value === null) {
-										return { type: 'null' };
-									}
-
-									if (Array.isArray(value)) {
-										if (value.length === 0) {
-											return { type: 'array', items: {} };
-										}
-										return {
-											type: 'array',
-											items: convertToSchema(value[0]),
-										};
-									}
-
-									switch (typeof value) {
-										case 'string':
-											return { type: 'string' };
-										case 'number':
-											return Number.isInteger(value) ? { type: 'integer' } : { type: 'number' };
-										case 'boolean':
-											return { type: 'boolean' };
-										case 'object': {
-											const properties: Record<string, unknown> = {};
-											for (const [key, val] of Object.entries(value as Record<string, unknown>)) {
-												properties[key] = convertToSchema(val);
-											}
-											return {
-												type: 'object',
-												properties,
-											};
-										}
-										default:
-											return {};
-									}
-								};
-
 								body.schema = convertToSchema(example);
 								delete body.jsonExample;
 							} catch (error) {
@@ -352,7 +248,7 @@ function createJsonExampleProperty(): INodeProperties {
 			},
 			show: {
 				resource: [resourceName],
-				operation: ['agentAsync'],
+				operation: [operationName],
 				schemaType: ['fromExample'],
 			},
 		},
@@ -384,7 +280,7 @@ function createSchemaProperty(): INodeProperties {
 			},
 			show: {
 				resource: [resourceName],
-				operation: ['agentAsync'],
+				operation: [operationName],
 				schemaType: ['manual'],
 			},
 		},
@@ -419,9 +315,9 @@ options.routing = {
 	output: {
 		postReceive: [
 			{
-				type: 'setKeyValue',
+				type: 'rootProperty',
 				properties: {
-					data: '={{$response.body}}',
+					property: 'body',
 				},
 			},
 		],

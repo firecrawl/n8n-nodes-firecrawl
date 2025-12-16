@@ -150,8 +150,7 @@ function createLimitProperty(operationName: string): INodeProperties {
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-limit
 		default: 500,
-		description:
-			'Maximum number of pages to crawl. Use lower limits for testing or to stay within budget. The crawl stops when this limit is reached or all discoverable pages are processed.',
+		description: 'Max number of results to return',
 		routing: {
 			request: {
 				body: {

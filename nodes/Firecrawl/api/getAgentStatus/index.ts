@@ -57,9 +57,9 @@ options.routing = {
 	output: {
 		postReceive: [
 			{
-				type: 'setKeyValue',
+				type: 'rootProperty',
 				properties: {
-					data: '={{$response.body}}',
+					property: 'body',
 				},
 			},
 		],

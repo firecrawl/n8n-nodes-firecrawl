@@ -95,8 +95,7 @@ function createLimitProperty(): INodeProperties {
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-limit
 		default: 5000,
-		description:
-			'Maximum number of URLs to return. Large sites may have thousands of pages. Use lower limits for initial exploration or to reduce response size.',
+		description: 'Max number of results to return',
 		routing: {
 			request: {
 				body: {

@@ -53,8 +53,7 @@ function createLimitProperty(operationName: string): INodeProperties {
 		},
 		// eslint-disable-next-line n8n-nodes-base/node-param-default-wrong-for-limit
 		default: 5,
-		description:
-			'Maximum number of search results to return and scrape. Higher limits provide more comprehensive results but use more credits. Range: 1-100.',
+		description: 'Max number of results to return',
 		routing: {
 			request: {
 				body: {
