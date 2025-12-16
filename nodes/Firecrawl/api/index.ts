@@ -34,6 +34,7 @@ import {
 	properties as getExtractStatusProperties,
 } from './getExtractStatus';
 import { options as agentOptions, properties as agentProperties } from './agent';
+import { options as agentAsyncOptions, properties as agentAsyncProperties } from './agentAsync';
 import {
 	options as getAgentStatusOptions,
 	properties as getAgentStatusProperties,
@@ -83,6 +84,7 @@ const operationOptions: INodePropertyOptions[] = [
 	extractOptions,
 	getExtractStatusOptions,
 	agentOptions,
+	agentAsyncOptions,
 	getAgentStatusOptions,
 	teamTokenUsageOptions,
 	teamCreditUsageOptions,
@@ -111,6 +113,7 @@ const rawProperties: INodeProperties[] = [
 	...extractProperties,
 	...getExtractStatusProperties,
 	...agentProperties,
+	...agentAsyncProperties,
 	...getAgentStatusProperties,
 	...teamTokenUsageProperties,
 	...teamCreditUsageProperties,
@@ -217,6 +220,11 @@ export const apiMethods = {
 			},
 		},
 		agent: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		agentAsync: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},

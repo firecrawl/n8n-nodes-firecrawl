@@ -3,19 +3,12 @@ import {
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
 	INodeProperties,
-	INodeExecutionData,
-	IN8nHttpFullResponse,
-	sleep,
 } from 'n8n-workflow';
 import { buildApiProperties, createOperationNotice } from '../common';
 
-const name = 'agent';
-const displayName = 'Agent - AI-powered web data extraction (waits for completion)';
-export const operationName = 'agent';
-
-// Default polling configuration
-const DEFAULT_POLL_INTERVAL_MS = 2000; // 2 seconds
-const DEFAULT_MAX_POLL_TIME_MS = 300000; // 5 minutes
+const name = 'agentAsync';
+const displayName = 'Agent (Async) - Returns job ID for manual polling';
+export const operationName = 'agentAsync';
 
 /**
  * Creates the prompt property (required)
@@ -47,7 +40,7 @@ function createPromptProperty(): INodeProperties {
 			},
 			show: {
 				resource: ['Default'],
-				operation: ['agent'],
+				operation: ['agentAsync'],
 			},
 		},
 	};
@@ -71,7 +64,7 @@ function createSpecifyUrlsProperty(): INodeProperties {
 			},
 			show: {
 				resource: ['Default'],
-				operation: ['agent'],
+				operation: ['agentAsync'],
 			},
 		},
 	};
@@ -210,7 +203,7 @@ function createUrlsProperty(): INodeProperties {
 			},
 			show: {
 				resource: ['Default'],
-				operation: ['agent'],
+				operation: ['agentAsync'],
 				specifyUrls: [true],
 			},
 		},
@@ -251,7 +244,7 @@ function createSchemaTypeProperty(): INodeProperties {
 			},
 			show: {
 				resource: ['Default'],
-				operation: ['agent'],
+				operation: ['agentAsync'],
 			},
 		},
 	};
@@ -358,7 +351,7 @@ function createJsonExampleProperty(): INodeProperties {
 			},
 			show: {
 				resource: ['Default'],
-				operation: ['agent'],
+				operation: ['agentAsync'],
 				schemaType: ['fromExample'],
 			},
 		},
@@ -390,7 +383,7 @@ function createSchemaProperty(): INodeProperties {
 			},
 			show: {
 				resource: ['Default'],
-				operation: ['agent'],
+				operation: ['agentAsync'],
 				schemaType: ['manual'],
 			},
 		},
@@ -416,7 +409,7 @@ function createAgentProperties(): INodeProperties[] {
 // Build and export the properties and options
 const { options, properties } = buildApiProperties(name, displayName, createAgentProperties());
 
-// Override the default routing to use the /agent endpoint with polling
+// Override the default routing to use the /agent endpoint
 options.routing = {
 	request: {
 		method: 'POST',
@@ -424,70 +417,11 @@ options.routing = {
 	},
 	output: {
 		postReceive: [
-			async function (
-				this: IExecuteSingleFunctions,
-				items: INodeExecutionData[],
-				response: IN8nHttpFullResponse,
-			): Promise<INodeExecutionData[]> {
-				const responseBody = response.body as IDataObject;
-
-				// Check if we got a job ID (async response)
-				if (!responseBody.id) {
-					// Already completed or error, return as-is
-					return items.map(() => ({
-						json: responseBody,
-					}));
-				}
-
-				const jobId = responseBody.id as string;
-				const credentials = await this.getCredentials('firecrawlApi');
-				const baseUrl = (credentials.baseUrl as string) || 'https://api.firecrawl.dev/v2';
-				const apiKey = credentials.apiKey as string;
-
-				// Poll until completion
-				const startTime = Date.now();
-				let status = responseBody.status as string;
-
-				while (status === 'processing' || status === 'pending') {
-					// Check for timeout
-					if (Date.now() - startTime > DEFAULT_MAX_POLL_TIME_MS) {
-						throw new Error(
-							`Agent job timed out after ${DEFAULT_MAX_POLL_TIME_MS / 1000} seconds. Job ID: ${jobId}. You can check the status manually using the "Get Agent Status" operation.`,
-						);
-					}
-
-					// Wait before polling
-					await sleep(DEFAULT_POLL_INTERVAL_MS);
-
-					// Poll the status endpoint
-					const statusResponse = await this.helpers.httpRequest({
-						method: 'GET',
-						url: `${baseUrl}/agent/${jobId}`,
-						headers: {
-							Authorization: `Bearer ${apiKey}`,
-							Accept: 'application/json',
-						},
-						json: true,
-					});
-
-					status = statusResponse.status as string;
-
-					// If completed or failed, return the result
-					if (status === 'completed' || status === 'failed') {
-						return [
-							{
-								json: statusResponse as IDataObject,
-							},
-						];
-					}
-				}
-
-				// Return whatever we have (should not reach here normally)
-				return [
-					{
-						json: responseBody,
-					},
-				];
+			{
+				type: 'setKeyValue',
+				properties: {
+					data: '={{$response.body}}',
+				},
 			},
 		],
 	},

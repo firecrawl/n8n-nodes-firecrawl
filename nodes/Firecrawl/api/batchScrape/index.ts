@@ -198,7 +198,7 @@ function createScrapeProperties(): INodeProperties[] {
 		createOperationNotice('Default', name, 'POST'),
 
 		// URL input
-		createBatchUrlsProperty(name, 'https://firecrawl.dev'),
+		createBatchUrlsProperty(name, ''),
 
 		// Parsers
 		createParsersProperty(operationName),
