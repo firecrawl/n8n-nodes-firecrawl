@@ -11,6 +11,7 @@ import { createOperationNotice } from '../common';
 export const name = 'search';
 export const displayName = 'Search the web and scrape results';
 export const operationName = 'search';
+export const resourceName = 'MapSearch';
 
 /**
  * Create the query property
@@ -141,7 +142,7 @@ function createSourcesProperty(
 						useCustomBody: [true],
 					},
 					show: {
-						resource: ['Default'],
+						resource: [resourceName],
 						operation: [operationName],
 					},
 			  },
@@ -265,7 +266,7 @@ function createTimeoutProperty(operationName: string): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -278,7 +279,7 @@ function createTimeoutProperty(operationName: string): INodeProperties {
 function createSearchProperties(): INodeProperties[] {
 	return [
 		// Operation notice
-		createOperationNotice('Default', name),
+		createOperationNotice(resourceName, name),
 
 		// Required parameters
 		createQueryProperty(name),

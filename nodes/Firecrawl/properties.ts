@@ -8,21 +8,41 @@ import { preSendActionCustomBody } from './helpers';
 export const authenticationProperties: INodeProperties[] = [];
 
 /**
- * Resource selector properties
+ * Resource selector properties - categories for grouping operations
  */
 export const resourceSelect: INodeProperties[] = [
 	{
 		displayName: 'Resource',
 		name: 'resource',
-		type: 'hidden',
+		type: 'options',
 		noDataExpression: true,
 		options: [
 			{
-				name: 'Default',
-				value: 'Default',
+				name: 'Scraping',
+				value: 'Scraping',
+			},
+			{
+				name: 'Crawling',
+				value: 'Crawling',
+			},
+			{
+				name: 'Agent',
+				value: 'Agent',
+			},
+			{
+				name: 'Map & Search',
+				value: 'MapSearch',
+			},
+			{
+				name: 'Account',
+				value: 'Account',
+			},
+			{
+				name: 'Extract (Legacy)',
+				value: 'Extract',
 			},
 		],
-		default: 'Default',
+		default: 'Scraping',
 	},
 ];
 
@@ -57,58 +77,8 @@ export const extraProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				useCustomBody: [true],
-				resource: ['Default'],
-				operation: ['Submit A Crawl Job'],
-			},
-		},
-	},
-	{
-		displayName: 'Custom Body',
-		name: 'customBody',
-		type: 'json',
-		default:
-			'{\n  "url": "string",\n  "excludePaths": [\n    "string"\n  ],\n  "limit": 0,\n  "scrapeOptions": {\n    "formats": [\n      {\n        "type": "markdown"\n      }\n    ],\n    "extract": {\n      "schema": "string",\n      "systemPrompt": "string",\n      "prompt": "string"\n    }\n  }\n}',
-		description: 'Custom body to send',
-		routing: {
-			request: {
-				body: {
-					customBody: '={{JSON.parse($value)}}',
-				},
-			},
-			send: {
-				preSend: [preSendActionCustomBody],
-			},
-		},
-		displayOptions: {
-			show: {
-				useCustomBody: [true],
-				resource: ['Default'],
-				operation: ['Crawl url with websocket monitoring'],
-			},
-		},
-	},
-	{
-		displayName: 'Custom Body',
-		name: 'customBody',
-		type: 'json',
-		default:
-			'{\n  "url": "string",\n  "limit": 0,\n  "webhook": "string",\n  "excludePaths": [\n    "string"\n  ],\n  "scrapeOptions": {\n    "formats": [\n      {\n        "type": "markdown"\n      }\n    ],\n    "extract": {\n      "schema": "string",\n      "systemPrompt": "string",\n      "prompt": "string"\n    }\n  }\n}',
-		description: 'Custom body to send',
-		routing: {
-			request: {
-				body: {
-					customBody: '={{JSON.parse($value)}}',
-				},
-			},
-			send: {
-				preSend: [preSendActionCustomBody],
-			},
-		},
-		displayOptions: {
-			show: {
-				useCustomBody: [true],
-				resource: ['Default'],
-				operation: ['Submit A Crawl Job With A Webhook'],
+				resource: ['Crawling'],
+				operation: ['crawl'],
 			},
 		},
 	},
@@ -132,8 +102,8 @@ export const extraProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				useCustomBody: [true],
-				resource: ['Default'],
-				operation: ['Scrape a url and get its content'],
+				resource: ['Scraping'],
+				operation: ['scrape'],
 			},
 		},
 	},
@@ -156,58 +126,12 @@ export const extraProperties: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				useCustomBody: [true],
-				resource: ['Default'],
-				operation: ['Map a website and get urls'],
+				resource: ['MapSearch'],
+				operation: ['map'],
 			},
 		},
 	},
 ];
-
-/**
- * Custom body for crawl operation
- */
-const customBodyCrawl: INodeProperties = {
-	displayName: 'Custom Body',
-	name: 'customBody',
-	type: 'json',
-	default: `{
-  "url": "https://firecrawl.dev",
-  "excludePaths": ["blog/*"],
-  "includePaths": [],
-  "prompt": "Get the latest news from the blog",
-  "limit": 100,
-  "crawlOptions": {
-    "ignoreSitemap": false,
-    "allowBackwardLinks": false,
-    "allowExternalLinks": false
-  },
-  "scrapeOptions": {
-    "formats": [
-      {
-        "type": "markdown"
-      }
-    ],
-    "onlyMainContent": true,
-    "removeBase64Images": true,
-    "mobile": false,
-    "waitFor": 0
-  },
-  "webhook": ""
-}`,
-	description: 'Custom body to send',
-	routing: {
-		request: {
-			body: '={{JSON.parse($value)}}',
-		},
-	},
-	displayOptions: {
-		show: {
-			resource: ['Default'],
-			operation: ['Crawl a website'],
-			useCustomBody: [true],
-		},
-	},
-};
 
 /**
  * Combine all properties into a single array
@@ -217,5 +141,4 @@ export const allProperties = [
 	...resourceSelect,
 	...apiProperties,
 	...extraProperties,
-	customBodyCrawl,
 ];

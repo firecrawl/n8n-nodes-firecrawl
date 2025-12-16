@@ -65,111 +65,190 @@ import {
 } from './teamQueueStatus';
 
 /**
- * Combined operation options
+ * Operation options organized by resource
  */
-const operationOptions: INodePropertyOptions[] = [
-	searchOptions,
-	mapOptions,
+const scrapingOperationOptions: INodePropertyOptions[] = [
 	scrapeOptions,
-	crawlOptions,
 	batchScrapeOptions,
 	batchScrapeStatusOptions,
 	batchScrapeErrorsOptions,
-	crawlActiveOptions,
-	crawlParamsPreviewOptions,
+	cancelBatchScrapeOptions,
+];
+
+const crawlingOperationOptions: INodePropertyOptions[] = [
+	crawlOptions,
+	getCrawlStatusOptions,
 	cancelCrawlOptions,
 	getCrawlErrorsOptions,
-	cancelBatchScrapeOptions,
-	getCrawlStatusOptions,
-	extractOptions,
-	getExtractStatusOptions,
+	crawlActiveOptions,
+	crawlParamsPreviewOptions,
+];
+
+const agentOperationOptions: INodePropertyOptions[] = [
 	agentOptions,
 	agentAsyncOptions,
 	getAgentStatusOptions,
-	teamTokenUsageOptions,
+];
+
+const mapSearchOperationOptions: INodePropertyOptions[] = [
+	mapOptions,
+	searchOptions,
+];
+
+const accountOperationOptions: INodePropertyOptions[] = [
 	teamCreditUsageOptions,
+	creditUsageHistoricalOptions,
+	teamTokenUsageOptions,
 	teamTokenUsageHistoricalOptions,
 	teamQueueStatusOptions,
-	creditUsageHistoricalOptions,
+];
+
+const extractOperationOptions: INodePropertyOptions[] = [
+	extractOptions,
+	getExtractStatusOptions,
 ];
 
 /**
- * Combined properties from all operations
+ * Operation selectors for each resource
  */
-const rawProperties: INodeProperties[] = [
-	...searchProperties,
-	...mapProperties,
-	...scrapeProperties,
-	...crawlProperties,
-	...batchScrapeProperties,
-	...batchScrapeStatusProperties,
-	...batchScrapeErrorsProperties,
-	...crawlActiveProperties,
-	...crawlParamsPreviewProperties,
-	...cancelCrawlProperties,
-	...getCrawlErrorsProperties,
-	...cancelBatchScrapeProperties,
-	...getCrawlStatusProperties,
-	...extractProperties,
-	...getExtractStatusProperties,
-	...agentProperties,
-	...agentAsyncProperties,
-	...getAgentStatusProperties,
-	...teamTokenUsageProperties,
-	...teamCreditUsageProperties,
-	...teamTokenUsageHistoricalProperties,
-	...teamQueueStatusProperties,
-	...creditUsageHistoricalProperties,
-];
-
-/**
- * Operation selector property
- */
-const operationSelector: INodeProperties = {
+const scrapingOperationSelector: INodeProperties = {
 	displayName: 'Operation',
 	name: 'operation',
 	type: 'options',
 	noDataExpression: true,
 	displayOptions: {
 		show: {
-			resource: ['Default'],
+			resource: ['Scraping'],
+		},
+	},
+	default: 'scrape',
+	options: scrapingOperationOptions,
+};
+
+const crawlingOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['Crawling'],
+		},
+	},
+	default: 'crawl',
+	options: crawlingOperationOptions,
+};
+
+const agentOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['Agent'],
+		},
+	},
+	default: 'agent',
+	options: agentOperationOptions,
+};
+
+const mapSearchOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['MapSearch'],
 		},
 	},
 	default: 'map',
-	options: operationOptions,
+	options: mapSearchOperationOptions,
+};
+
+const accountOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['Account'],
+		},
+	},
+	default: 'teamCreditUsage',
+	options: accountOperationOptions,
+};
+
+const extractOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['Extract'],
+		},
+	},
+	default: 'extract',
+	options: extractOperationOptions,
 };
 
 /**
- * All API properties
+ * Combined properties from all operations
  */
-export const apiProperties: INodeProperties[] = [operationSelector, ...rawProperties];
+const rawProperties: INodeProperties[] = [
+	// Scraping operations
+	...scrapeProperties,
+	...batchScrapeProperties,
+	...batchScrapeStatusProperties,
+	...batchScrapeErrorsProperties,
+	...cancelBatchScrapeProperties,
+	// Crawling operations
+	...crawlProperties,
+	...getCrawlStatusProperties,
+	...cancelCrawlProperties,
+	...getCrawlErrorsProperties,
+	...crawlActiveProperties,
+	...crawlParamsPreviewProperties,
+	// Agent operations
+	...agentProperties,
+	...agentAsyncProperties,
+	...getAgentStatusProperties,
+	// Map & Search operations
+	...mapProperties,
+	...searchProperties,
+	// Account operations
+	...teamCreditUsageProperties,
+	...creditUsageHistoricalProperties,
+	...teamTokenUsageProperties,
+	...teamTokenUsageHistoricalProperties,
+	...teamQueueStatusProperties,
+	// Extract operations (Legacy)
+	...extractProperties,
+	...getExtractStatusProperties,
+];
+
+/**
+ * All API properties with operation selectors for each resource
+ */
+export const apiProperties: INodeProperties[] = [
+	scrapingOperationSelector,
+	crawlingOperationSelector,
+	agentOperationSelector,
+	mapSearchOperationSelector,
+	accountOperationSelector,
+	extractOperationSelector,
+	...rawProperties,
+];
 
 /**
  * All API methods
  */
 export const apiMethods = {
-	Default: {
-		search: {
-			execute(this: any) {
-				return this.helpers.httpRequest as any;
-			},
-		},
-		map: {
-			execute(this: any) {
-				return this.helpers.httpRequest as any;
-			},
-		},
+	Scraping: {
 		scrape: {
-			execute(this: any) {
-				return this.helpers.httpRequest as any;
-			},
-		},
-		crawl: {
-			execute(this: any) {
-				return this.helpers.httpRequest as any;
-			},
-		},
-		getCrawlStatus: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
@@ -189,12 +268,19 @@ export const apiMethods = {
 				return this.helpers.httpRequest as any;
 			},
 		},
-		crawlActive: {
+		cancelBatchScrape: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
 		},
-		crawlParamsPreview: {
+	},
+	Crawling: {
+		crawl: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getCrawlStatus: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
@@ -209,16 +295,18 @@ export const apiMethods = {
 				return this.helpers.httpRequest as any;
 			},
 		},
-		extract: {
+		crawlActive: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
 		},
-		getExtractStatus: {
+		crawlParamsPreview: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
 		},
+	},
+	Agent: {
 		agent: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
@@ -234,7 +322,21 @@ export const apiMethods = {
 				return this.helpers.httpRequest as any;
 			},
 		},
-		teamTokenUsage: {
+	},
+	MapSearch: {
+		map: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		search: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+	},
+	Account: {
+		teamCreditUsage: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
@@ -244,12 +346,7 @@ export const apiMethods = {
 				return this.helpers.httpRequest as any;
 			},
 		},
-		cancelBatchScrape: {
-			execute(this: any) {
-				return this.helpers.httpRequest as any;
-			},
-		},
-		teamCreditUsage: {
+		teamTokenUsage: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
@@ -260,6 +357,18 @@ export const apiMethods = {
 			},
 		},
 		teamQueueStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+	},
+	Extract: {
+		extract: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		getExtractStatus: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},

@@ -3,9 +3,10 @@ import { buildApiProperties, createOperationNotice } from '../common';
 
 export const name = 'teamCreditUsage';
 export const displayName = 'Get team credit usage';
+export const resourceName = 'Account';
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice('Default', name, 'GET')];
+	return [createOperationNotice(resourceName, name, 'GET')];
 }
 
 const { options, properties } = buildApiProperties(name, displayName, createProperties());

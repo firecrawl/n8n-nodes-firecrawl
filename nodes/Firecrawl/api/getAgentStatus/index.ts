@@ -4,6 +4,7 @@ import { buildApiProperties, createOperationNotice } from '../common';
 const name = 'getAgentStatus';
 const displayName = 'Get Agent Status';
 export const operationName = 'getAgentStatus';
+export const resourceName = 'Agent';
 
 /**
  * Creates the agent job ID property
@@ -26,7 +27,7 @@ function createAgentIdProperty(): INodeProperties {
 		},
 		displayOptions: {
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -38,7 +39,7 @@ function createAgentIdProperty(): INodeProperties {
  * @returns Array of properties for the get agent status operation
  */
 function createGetAgentStatusProperties(): INodeProperties[] {
-	return [createOperationNotice('Default', name, 'GET'), createAgentIdProperty()];
+	return [createOperationNotice(resourceName, name, 'GET'), createAgentIdProperty()];
 }
 
 // Build and export the properties and options

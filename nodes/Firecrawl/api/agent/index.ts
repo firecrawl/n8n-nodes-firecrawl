@@ -12,10 +12,11 @@ import { buildApiProperties, createOperationNotice } from '../common';
 const name = 'agent';
 const displayName = 'Agent - AI-powered web data extraction (waits for completion)';
 export const operationName = 'agent';
+export const resourceName = 'Agent';
 
 // Default polling configuration
 const DEFAULT_POLL_INTERVAL_MS = 2000; // 2 seconds
-const DEFAULT_MAX_POLL_TIME_MS = 300000; // 5 minutes
+const DEFAULT_MAX_WAIT_TIME_SECONDS = 300; // 5 minutes
 
 /**
  * Creates the prompt property (required)
@@ -46,7 +47,7 @@ function createPromptProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agent'],
 			},
 		},
@@ -70,7 +71,7 @@ function createSpecifyUrlsProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agent'],
 			},
 		},
@@ -209,7 +210,7 @@ function createUrlsProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agent'],
 				specifyUrls: [true],
 			},
@@ -250,7 +251,7 @@ function createSchemaTypeProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agent'],
 			},
 		},
@@ -357,7 +358,7 @@ function createJsonExampleProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agent'],
 				schemaType: ['fromExample'],
 			},
@@ -389,9 +390,36 @@ function createSchemaProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agent'],
 				schemaType: ['manual'],
+			},
+		},
+	};
+}
+
+/**
+ * Creates the max wait time property
+ * @returns The max wait time property
+ */
+function createMaxWaitTimeProperty(): INodeProperties {
+	return {
+		displayName: 'Max Wait Time',
+		name: 'maxWaitTime',
+		type: 'number',
+		default: DEFAULT_MAX_WAIT_TIME_SECONDS,
+		description: 'Maximum time in seconds to wait for the agent to complete. If exceeded, the job ID will be returned so you can check status manually.',
+		typeOptions: {
+			minValue: 2,
+			maxValue: 600,
+		},
+		displayOptions: {
+			hide: {
+				useCustomBody: [true],
+			},
+			show: {
+				resource: [resourceName],
+				operation: ['agent'],
 			},
 		},
 	};
@@ -403,13 +431,14 @@ function createSchemaProperty(): INodeProperties {
  */
 function createAgentProperties(): INodeProperties[] {
 	return [
-		createOperationNotice('Default', name, 'POST'),
+		createOperationNotice(resourceName, name, 'POST'),
 		createPromptProperty(),
 		createSpecifyUrlsProperty(),
 		createUrlsProperty(),
 		createSchemaTypeProperty(),
 		createJsonExampleProperty(),
 		createSchemaProperty(),
+		createMaxWaitTimeProperty(),
 	];
 }
 
@@ -444,15 +473,20 @@ options.routing = {
 				const baseUrl = (credentials.baseUrl as string) || 'https://api.firecrawl.dev/v2';
 				const apiKey = credentials.apiKey as string;
 
+				// Get max wait time from node parameter (in seconds), convert to ms
+				const maxWaitTimeSeconds = this.getNodeParameter('maxWaitTime', DEFAULT_MAX_WAIT_TIME_SECONDS) as number;
+				const maxWaitTimeMs = maxWaitTimeSeconds * 1000;
+
 				// Poll until completion
+				// Initial POST response may not include status, so default to 'processing'
 				const startTime = Date.now();
-				let status = responseBody.status as string;
+				let status = (responseBody.status as string) || 'processing';
 
 				while (status === 'processing' || status === 'pending') {
 					// Check for timeout
-					if (Date.now() - startTime > DEFAULT_MAX_POLL_TIME_MS) {
+					if (Date.now() - startTime > maxWaitTimeMs) {
 						throw new Error(
-							`Agent job timed out after ${DEFAULT_MAX_POLL_TIME_MS / 1000} seconds. Job ID: ${jobId}. You can check the status manually using the "Get Agent Status" operation.`,
+							`Agent job timed out after ${maxWaitTimeSeconds} seconds. Job ID: ${jobId}. You can check the status manually using the "Get Agent Status" operation.`,
 						);
 					}
 

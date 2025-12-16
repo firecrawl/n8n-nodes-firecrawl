@@ -15,6 +15,7 @@ import {
 export const name = 'crawl';
 export const displayName = 'Crawl a website and scrape all pages';
 export const operationName = 'crawl';
+export const resourceName = 'Crawling';
 
 /**
  * Creates the exclude paths property
@@ -68,7 +69,7 @@ function createExcludePathsProperty(
 						useCustomBody: [true],
 					},
 					show: {
-						resource: ['Default'],
+						resource: [resourceName],
 						operation: [operationName],
 					},
 			  },
@@ -127,7 +128,7 @@ function createIncludePathsProperty(
 						useCustomBody: [true],
 					},
 					show: {
-						resource: ['Default'],
+						resource: [resourceName],
 						operation: [operationName],
 					},
 			  },
@@ -163,7 +164,7 @@ function createLimitProperty(operationName: string): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -219,7 +220,7 @@ function createDelayProperty(operationName: string): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -255,7 +256,7 @@ function createMaxConcurrencyProperty(operationName: string): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -287,7 +288,7 @@ function createPromptProperty(operationName: string): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -373,7 +374,7 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -454,10 +455,10 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
 function createCrawlProperties(): INodeProperties[] {
 	return [
 		// Operation notice
-		createOperationNotice('Default', name),
+		createOperationNotice(resourceName, name),
 
 		// URL input
-		createUrlProperty(name, 'https://firecrawl.dev'),
+		createUrlProperty(name, 'https://firecrawl.dev', resourceName),
 
 		// Prompt
 		createPromptProperty(operationName),
@@ -481,7 +482,7 @@ function createCrawlProperties(): INodeProperties[] {
 		createCrawlOptionsProperty(operationName),
 
 		// Scrape options
-		createScrapeOptionsProperty(operationName),
+		createScrapeOptionsProperty(operationName, true, false, resourceName),
 	];
 }
 

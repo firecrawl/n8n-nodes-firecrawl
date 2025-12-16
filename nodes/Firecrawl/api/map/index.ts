@@ -10,6 +10,7 @@ import { buildApiProperties, createOperationNotice, createUrlProperty } from '..
 export const name = 'map';
 export const displayName = 'Map a website to discover all URLs';
 export const operationName = 'map';
+export const resourceName = 'MapSearch';
 
 function createSitemapProperty(): INodeProperties {
 	return {
@@ -48,7 +49,7 @@ function createSitemapProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -75,7 +76,7 @@ function createIncludeSubdomainsProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -108,7 +109,7 @@ function createLimitProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -135,7 +136,7 @@ function createTimeoutProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},
@@ -216,9 +217,9 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
 function createMapProperties(): INodeProperties[] {
 	return [
 		// Operation notice
-		createOperationNotice('Default', name),
+		createOperationNotice(resourceName, name),
 
-		createUrlProperty(name),
+		createUrlProperty(name, undefined, resourceName),
 
 		createSitemapProperty(),
 

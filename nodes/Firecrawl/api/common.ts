@@ -89,12 +89,14 @@ export function createUrlProperty(
  * @param operationName - The name of the operation
  * @param omitDisplayOptions - Whether to omit the display options
  * @param useNestedScrapeOptions - Whether to use nested scrape options
+ * @param resourceName - The name of the resource
  * @returns The actions property
  */
 export function createActionsProperty(
 	operationName: string,
 	omitDisplayOptions: boolean = false,
 	useNestedScrapeOptions: boolean = true,
+	resourceName: string = 'Scraping',
 ): INodeProperties {
 	return {
 		displayName: 'Actions',
@@ -253,7 +255,7 @@ export function createActionsProperty(
 						useCustomBody: [true],
 					},
 					show: {
-						resource: ['Default'],
+						resource: [resourceName],
 						operation: [operationName],
 					},
 			  },
@@ -261,14 +263,18 @@ export function createActionsProperty(
 }
 
 /**
- * Creates the actions property
+ * Creates the location property
  * @param operationName - The name of the operation
- * @returns The actions property
+ * @param omitDisplayOptions - Whether to omit the display options
+ * @param useNestedScrapeOptions - Whether to use nested scrape options
+ * @param resourceName - The name of the resource
+ * @returns The location property
  */
 export function createLocationProperty(
 	operationName: string,
 	omitDisplayOptions: boolean = false,
 	useNestedScrapeOptions: boolean = true,
+	resourceName: string = 'Scraping',
 ): INodeProperties {
 	return {
 		displayName: 'Location',
@@ -358,7 +364,7 @@ export function createLocationProperty(
 						useCustomBody: [true],
 					},
 					show: {
-						resource: ['Default'],
+						resource: [resourceName],
 						operation: [operationName],
 					},
 			  },
@@ -370,12 +376,14 @@ export function createLocationProperty(
  * @param operationName - The name of the operation
  * @param omitDisplayOptions - Whether to omit the display options
  * @param useNestedScrapeOptions - Whether to use nested scrape options
+ * @param resourceName - The name of the resource
  * @returns The include tags property
  */
 export function createIncludeTagsProperty(
 	operationName: string,
 	omitDisplayOptions: boolean = false,
 	useNestedScrapeOptions: boolean = true,
+	resourceName: string = 'Scraping',
 ): INodeProperties {
 	return {
 		displayName: 'Include Tags',
@@ -424,7 +432,7 @@ export function createIncludeTagsProperty(
 						useCustomBody: [true],
 					},
 					show: {
-						resource: ['Default'],
+						resource: [resourceName],
 						operation: [operationName],
 					},
 			  },
@@ -575,12 +583,14 @@ export function createBatchUrlsProperty(
  * @param operationName - The name of the operation
  * @param omitDisplayOptions - Whether to omit the display options
  * @param useNestedScrapeOptions - Whether to use nested scrape options
+ * @param resourceName - The name of the resource
  * @returns The exclude tags property
  */
 export function createExcludeTagsProperty(
 	operationName: string,
 	omitDisplayOptions: boolean = false,
 	useNestedScrapeOptions: boolean = true,
+	resourceName: string = 'Scraping',
 ): INodeProperties {
 	return {
 		displayName: 'Exclude Tags',
@@ -629,7 +639,7 @@ export function createExcludeTagsProperty(
 						useCustomBody: [true],
 					},
 					show: {
-						resource: ['Default'],
+						resource: [resourceName],
 						operation: [operationName],
 					},
 			  },
@@ -786,6 +796,7 @@ export function createScrapeOptionsProperty(
 	operationName: string,
 	useNestedScrapeOptions: boolean = true,
 	batchMode: boolean = false,
+	resourceName: string = 'Scraping',
 ): INodeProperties {
 	const scrapeOptionsBody = useNestedScrapeOptions
 		? { scrapeOptions: '={{$value.options}}' }
@@ -1145,7 +1156,7 @@ export function createScrapeOptionsProperty(
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [operationName],
 			},
 		},

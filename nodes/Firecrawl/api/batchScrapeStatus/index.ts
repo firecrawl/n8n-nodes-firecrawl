@@ -3,6 +3,7 @@ import { buildApiProperties, createOperationNotice } from '../common';
 
 export const name = 'batchScrapeStatus';
 export const displayName = 'Get batch scrape status';
+export const resourceName = 'Scraping';
 
 function createBatchIdProperty(): INodeProperties {
 	return {
@@ -19,7 +20,7 @@ function createBatchIdProperty(): INodeProperties {
 		},
 		displayOptions: {
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [name],
 			},
 		},
@@ -27,7 +28,7 @@ function createBatchIdProperty(): INodeProperties {
 }
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice('Default', name, 'GET'), createBatchIdProperty()];
+	return [createOperationNotice(resourceName, name, 'GET'), createBatchIdProperty()];
 }
 
 const { options, properties } = buildApiProperties(name, displayName, createProperties());

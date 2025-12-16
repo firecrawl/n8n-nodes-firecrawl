@@ -3,6 +3,7 @@ import { buildApiProperties, createOperationNotice } from '../common';
 
 export const name = 'getCrawlErrors';
 export const displayName = 'Get crawl errors';
+export const resourceName = 'Crawling';
 
 function createCrawlIdProperty(): INodeProperties {
 	return {
@@ -19,7 +20,7 @@ function createCrawlIdProperty(): INodeProperties {
 		},
 		displayOptions: {
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: [name],
 			},
 		},
@@ -27,7 +28,7 @@ function createCrawlIdProperty(): INodeProperties {
 }
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice('Default', name, 'GET'), createCrawlIdProperty()];
+	return [createOperationNotice(resourceName, name, 'GET'), createCrawlIdProperty()];
 }
 
 const { options, properties } = buildApiProperties(name, displayName, createProperties());

@@ -9,6 +9,7 @@ import { buildApiProperties, createOperationNotice } from '../common';
 const name = 'agentAsync';
 const displayName = 'Agent (Async) - Returns job ID for manual polling';
 export const operationName = 'agentAsync';
+export const resourceName = 'Agent';
 
 /**
  * Creates the prompt property (required)
@@ -39,7 +40,7 @@ function createPromptProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agentAsync'],
 			},
 		},
@@ -63,7 +64,7 @@ function createSpecifyUrlsProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agentAsync'],
 			},
 		},
@@ -202,7 +203,7 @@ function createUrlsProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agentAsync'],
 				specifyUrls: [true],
 			},
@@ -243,7 +244,7 @@ function createSchemaTypeProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agentAsync'],
 			},
 		},
@@ -350,7 +351,7 @@ function createJsonExampleProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agentAsync'],
 				schemaType: ['fromExample'],
 			},
@@ -382,7 +383,7 @@ function createSchemaProperty(): INodeProperties {
 				useCustomBody: [true],
 			},
 			show: {
-				resource: ['Default'],
+				resource: [resourceName],
 				operation: ['agentAsync'],
 				schemaType: ['manual'],
 			},
@@ -396,7 +397,7 @@ function createSchemaProperty(): INodeProperties {
  */
 function createAgentProperties(): INodeProperties[] {
 	return [
-		createOperationNotice('Default', name, 'POST'),
+		createOperationNotice(resourceName, name, 'POST'),
 		createPromptProperty(),
 		createSpecifyUrlsProperty(),
 		createUrlsProperty(),
