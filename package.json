@@ -33,16 +33,19 @@
       "dist/credentials/FirecrawlApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/Firecrawl/Firecrawl.node.js"
+      "dist/nodes/Firecrawl/Firecrawl.node.js",
+      "dist/nodes/Firecrawl/FirecrawlTool.node.js"
     ]
   },
   "devDependencies": {
+    "@langchain/core": "^1.0.2",
     "@typescript-eslint/parser": "~5.45",
     "eslint-plugin-n8n-nodes-base": "^1.11.0",
     "gulp": "^4.0.2",
     "n8n-workflow": "*",
     "prettier": "^2.7.1",
-    "typescript": "~4.8.4"
+    "typescript": "~5.0.0",
+    "zod": "^3.22.4"
   },
   "peerDependencies": {
     "n8n-workflow": ">=1.79.0"
