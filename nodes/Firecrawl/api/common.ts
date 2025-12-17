@@ -8,8 +8,41 @@ import {
 import { buildPropertiesWithOptions } from '../helpers';
 
 /**
+ * Normalizes a URL by adding https:// if no protocol is present
+ * @param url - The URL string to normalize
+ * @returns The normalized URL with protocol
+ */
+function normalizeUrl(url: string): string {
+	const trimmed = url.trim();
+	if (!trimmed) return '';
+	// If URL already has a protocol, return as-is
+	if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+		return trimmed;
+	}
+	// Add https:// prefix for URLs without protocol
+	return `https://${trimmed}`;
+}
+
+/**
+ * Checks if a string looks like a valid URL (with or without protocol)
+ * @param str - The string to check
+ * @returns True if the string looks like a URL
+ */
+function looksLikeUrl(str: string): boolean {
+	const trimmed = str.trim();
+	if (!trimmed) return false;
+	// Already has protocol
+	if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+		return true;
+	}
+	// Check if it looks like a domain (contains a dot and no spaces)
+	return trimmed.includes('.') && !trimmed.includes(' ');
+}
+
+/**
  * Extracts URLs from various input formats
  * Handles: JSON arrays, newline-separated, comma-separated, space-separated, and single URLs
+ * URLs without a protocol (e.g., "example.com") will have https:// prepended
  * @param val - The input value to extract URLs from
  * @returns An array of URL strings
  */
@@ -39,7 +72,8 @@ export function extractUrls(val: unknown): string[] {
 			return trimmed
 				.split('\n')
 				.map((u) => u.trim())
-				.filter((u) => u && u.startsWith('http'));
+				.filter(looksLikeUrl)
+				.map(normalizeUrl);
 		}
 
 		// Check for comma separation
@@ -47,20 +81,22 @@ export function extractUrls(val: unknown): string[] {
 			return trimmed
 				.split(',')
 				.map((u) => u.trim())
-				.filter((u) => u && u.startsWith('http'));
+				.filter(looksLikeUrl)
+				.map(normalizeUrl);
 		}
 
-		// Check for space separation (multiple URLs)
+		// Check for space separation (multiple URLs with http)
 		if (trimmed.includes(' http')) {
 			return trimmed
 				.split(/\s+/)
 				.map((u) => u.trim())
-				.filter((u) => u && u.startsWith('http'));
+				.filter(looksLikeUrl)
+				.map(normalizeUrl);
 		}
 
-		// Single URL
-		if (trimmed.startsWith('http')) {
-			return [trimmed];
+		// Single URL (with or without protocol)
+		if (looksLikeUrl(trimmed)) {
+			return [normalizeUrl(trimmed)];
 		}
 
 		return [];
@@ -69,8 +105,8 @@ export function extractUrls(val: unknown): string[] {
 	// Object with url property
 	if (typeof val === 'object' && val !== null && 'url' in val) {
 		const urlVal = (val as { url: unknown }).url;
-		if (typeof urlVal === 'string') {
-			return [urlVal];
+		if (typeof urlVal === 'string' && looksLikeUrl(urlVal)) {
+			return [normalizeUrl(urlVal)];
 		}
 	}
 
