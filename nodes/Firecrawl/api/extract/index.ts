@@ -128,7 +128,7 @@ function createEnableWebSearchProperty(): INodeProperties {
 		type: 'boolean',
 		default: false,
 		description:
-			'Allow the AI to search the web for additional information not found on the page. Useful for enriching extracted data with external context.',
+			'Whether to allow the AI to search the web for additional information not found on the page. Useful for enriching extracted data with external context.',
 		routing: {
 			request: {
 				body: {
@@ -155,7 +155,7 @@ function createIgnoreSitemapProperty(): INodeProperties {
 		type: 'boolean',
 		default: true,
 		description:
-			'Skip the sitemap when discovering URLs matching your glob pattern. Enable for faster extraction when you know the exact URL patterns you want.',
+			'Whether to skip the sitemap when discovering URLs matching your glob pattern. Enable for faster extraction when you know the exact URL patterns you want.',
 		routing: {
 			request: {
 				body: {
@@ -182,7 +182,7 @@ function createIncludeSubdomainsProperty(): INodeProperties {
 		type: 'boolean',
 		default: false,
 		description:
-			'Extract data from subdomains matching your URL patterns. Enable to include blog.example.com or docs.example.com when extracting from example.com.',
+			'Whether to extract data from subdomains matching your URL patterns. Enable to include blog.example.com or docs.example.com when extracting from example.com.',
 		routing: {
 			request: {
 				body: {
@@ -209,7 +209,7 @@ function createShowSourcesProperty(): INodeProperties {
 		type: 'boolean',
 		default: false,
 		description:
-			'Include source URLs and page sections where each piece of data was found. Useful for verification, citation, or debugging extraction results.',
+			'Whether to include source URLs and page sections where each piece of data was found. Useful for verification, citation, or debugging extraction results.',
 		routing: {
 			request: {
 				body: {

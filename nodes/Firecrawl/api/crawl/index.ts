@@ -313,7 +313,7 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				type: 'boolean',
 				default: false,
 				description:
-					'Skip reading the website\'s sitemap.xml. Enable if the sitemap is inaccurate, outdated, or you want to discover pages through link following only.',
+					'Whether to skip reading the website\'s sitemap.xml. Enable if the sitemap is inaccurate, outdated, or you want to discover pages through link following only.',
 				routing: {
 					request: {
 						body: {
@@ -328,7 +328,7 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				type: 'boolean',
 				default: false,
 				description:
-					'Treat URLs with different query parameters as the same page. Enable to avoid duplicate scrapes of pages like /products?page=1 and /products?page=2.',
+					'Whether to treat URLs with different query parameters as the same page. Enable to avoid duplicate scrapes of pages like /products?page=1 and /products?page=2.',
 				routing: {
 					request: {
 						body: {
@@ -343,7 +343,7 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				type: 'boolean',
 				default: false,
 				description:
-					'Follow links to other domains during the crawl. Use with caution as this can significantly expand the crawl scope and credit usage.',
+					'Whether to follow links to other domains during the crawl. Use with caution as this can significantly expand the crawl scope and credit usage.',
 				routing: {
 					request: {
 						body: {
@@ -358,7 +358,7 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 				type: 'boolean',
 				default: false,
 				description:
-					'Include subdomains like blog.example.com or docs.example.com when crawling example.com. Enable to capture content across the entire domain ecosystem.',
+					'Whether to include subdomains like blog.example.com or docs.example.com when crawling example.com. Enable to capture content across the entire domain ecosystem.',
 				routing: {
 					request: {
 						body: {
