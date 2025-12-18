@@ -3,7 +3,7 @@ name: Publish n8n Nodes
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - package.json
 
