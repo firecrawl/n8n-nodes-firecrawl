@@ -63,7 +63,7 @@ function createIncludeSubdomainsProperty(): INodeProperties {
 		type: 'boolean',
 		default: false,
 		description:
-			'Discover URLs on subdomains like blog.example.com or docs.example.com. Enable to map the entire domain ecosystem, not just the main domain.',
+			'Whether to discover URLs on subdomains like blog.example.com or docs.example.com. Enable to map the entire domain ecosystem, not just the main domain.',
 		routing: {
 			request: {
 				body: {

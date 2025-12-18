@@ -18,28 +18,28 @@ export const resourceSelect: INodeProperties[] = [
 		noDataExpression: true,
 		options: [
 			{
-				name: 'Scraping',
-				value: 'Scraping',
-			},
-			{
-				name: 'Crawling',
-				value: 'Crawling',
+				name: 'Account',
+				value: 'Account',
 			},
 			{
 				name: 'Agent',
 				value: 'Agent',
 			},
 			{
-				name: 'Map & Search',
-				value: 'MapSearch',
-			},
-			{
-				name: 'Account',
-				value: 'Account',
+				name: 'Crawling',
+				value: 'Crawling',
 			},
 			{
 				name: 'Extract (Legacy)',
 				value: 'Extract',
+			},
+			{
+				name: 'Map & Search',
+				value: 'MapSearch',
+			},
+			{
+				name: 'Scraping',
+				value: 'Scraping',
 			},
 		],
 		default: 'Scraping',

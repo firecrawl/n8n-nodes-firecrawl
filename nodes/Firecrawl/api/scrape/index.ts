@@ -57,8 +57,7 @@ function createParsersProperty(operationName: string): INodeProperties {
 
 						// Transform parsers to the correct API format: [{ type: "pdf" }]
 						if (body.parsers !== undefined) {
-							// eslint-disable-next-line @typescript-eslint/no-explicit-any
-							let rawValue: any = body.parsers;
+							let rawValue = body.parsers as unknown;
 
 							// Flatten nested arrays (handles cases like [["pdf"]] or [[["pdf"]]])
 							while (Array.isArray(rawValue) && rawValue.length === 1 && Array.isArray(rawValue[0])) {

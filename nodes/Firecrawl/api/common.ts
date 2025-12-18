@@ -852,7 +852,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 			type: 'boolean',
 			default: true,
 			description:
-				'Continue processing valid URLs even if some are malformed or inaccessible. When disabled, the entire batch fails if any URL is invalid.',
+				'Whether to continue processing valid URLs even if some are malformed or inaccessible. When disabled, the entire batch fails if any URL is invalid.',
 		},
 		{
 			displayName: 'Store In Cache',
@@ -860,7 +860,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 			type: 'boolean',
 			default: true,
 			description:
-				'Cache scraped pages for faster subsequent requests. Disable for privacy-sensitive scraping or when you need fresh data on every request.',
+				'Whether to cache scraped pages for faster subsequent requests. Disable for privacy-sensitive scraping or when you need fresh data on every request.',
 		},
 		{
 			displayName: 'Zero Data Retention',
@@ -868,7 +868,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 			type: 'boolean',
 			default: false,
 			description:
-				'Delete all scraped data from Firecrawl servers immediately after returning results. Enable for maximum privacy compliance (GDPR, HIPAA). Requires special account access.',
+				'Whether to delete all scraped data from Firecrawl servers immediately after returning results. Enable for maximum privacy compliance (GDPR, HIPAA). Requires special account access.',
 		},
 	];
 }
@@ -1119,7 +1119,7 @@ export function createScrapeOptionsProperty(
 						type: 'boolean',
 						default: true,
 						description:
-							'When enabled, automatically removes navigation, headers, footers, sidebars, and other boilerplate content. Best for extracting article text or primary page content. Disable to capture the full page.',
+							'Whether to automatically remove navigation, headers, footers, sidebars, and other boilerplate content. Best for extracting article text or primary page content. Disable to capture the full page.',
 					},
 					createIncludeTagsProperty(operationName, true, useNestedScrapeOptions),
 					createExcludeTagsProperty(operationName, true, useNestedScrapeOptions),
@@ -1161,7 +1161,7 @@ export function createScrapeOptionsProperty(
 						type: 'boolean',
 						default: false,
 						description:
-							'Emulate a mobile device when scraping. Useful for sites with mobile-specific content, responsive layouts, or mobile-only features. Changes viewport and user-agent.',
+							'Whether to emulate a mobile device when scraping. Useful for sites with mobile-specific content, responsive layouts, or mobile-only features. Changes viewport and user-agent.',
 					},
 					{
 						displayName: 'Skip TLS Verification',
@@ -1169,7 +1169,7 @@ export function createScrapeOptionsProperty(
 						type: 'boolean',
 						default: false,
 						description:
-							'Bypass SSL/TLS certificate validation. Enable for sites with self-signed or expired certificates. Use with caution as it reduces security.',
+							'Whether to bypass SSL/TLS certificate validation. Enable for sites with self-signed or expired certificates. Use with caution as it reduces security.',
 					},
 					{
 						displayName: 'Timeout (Ms)',
@@ -1187,7 +1187,7 @@ export function createScrapeOptionsProperty(
 						type: 'boolean',
 						default: true,
 						description:
-							'Strip embedded base64 images from output while preserving alt text. Reduces output size significantly. Disable if you need inline image data.',
+							'Whether to strip embedded base64 images from output while preserving alt text. Reduces output size significantly. Disable if you need inline image data.',
 					},
 					{
 						displayName: 'Block Ads',
@@ -1195,7 +1195,7 @@ export function createScrapeOptionsProperty(
 						type: 'boolean',
 						default: true,
 						description:
-							'Enable ad-blocking and cookie consent popup blocking for cleaner content extraction. Recommended for most scraping tasks.',
+							'Whether to enable ad-blocking and cookie consent popup blocking for cleaner content extraction. Recommended for most scraping tasks.',
 					},
 					{
 						displayName: 'Store In Cache',
@@ -1203,7 +1203,7 @@ export function createScrapeOptionsProperty(
 						type: 'boolean',
 						default: true,
 						description:
-							'Cache the scraped page for faster subsequent requests. Disable for real-time data needs, sensitive content, or when privacy is a concern.',
+							'Whether to cache the scraped page for faster subsequent requests. Disable for real-time data needs, sensitive content, or when privacy is a concern.',
 					},
 					{
 						displayName: 'Proxy',
