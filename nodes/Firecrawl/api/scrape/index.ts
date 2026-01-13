@@ -13,7 +13,7 @@ import {
 
 // Define the operation name and display name
 export const name = 'scrape';
-export const displayName = 'Scrape a URL and get its content as markdown, summary, or other formats';
+export const displayName = 'Scrape a URL and get content as markdown or other formats';
 export const operationName = 'scrape';
 export const resourceName = 'Scraping';
 
