@@ -9,6 +9,16 @@ export async function mergeCustomBodyWithRequest(
 	this: IExecuteSingleFunctions,
 	requestOptions: IHttpRequestOptions,
 ): Promise<IHttpRequestOptions> {
+	// Only process custom body if the useCustomBody toggle is enabled
+	const useCustomBody = this.getNodeParameter('useCustomBody', false) as boolean;
+	if (!useCustomBody) {
+		// Remove any customBody that may have been added from default values
+		if (typeof requestOptions.body === 'object' && requestOptions.body) {
+			delete (requestOptions.body as IDataObject).customBody;
+		}
+		return Promise.resolve(requestOptions);
+	}
+
 	const { customBody } = requestOptions.body as IDataObject;
 
 	if (typeof requestOptions.body === 'object' && typeof customBody === 'object') {
