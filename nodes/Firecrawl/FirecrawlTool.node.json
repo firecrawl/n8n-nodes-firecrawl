@@ -1,0 +1,19 @@
+{
+	"node": "@mendable/n8n-nodes-firecrawl.FirecrawlTool",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Tool", "AI", "Development", "Developer Tools"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": ""
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": ""
+			}
+		]
+	}
+}
+
