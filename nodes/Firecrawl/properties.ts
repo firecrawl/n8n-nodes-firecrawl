@@ -26,6 +26,10 @@ export const resourceSelect: INodeProperties[] = [
 				value: 'Agent',
 			},
 			{
+				name: 'Browser',
+				value: 'Browser',
+			},
+			{
 				name: 'Crawling',
 				value: 'Crawling',
 			},

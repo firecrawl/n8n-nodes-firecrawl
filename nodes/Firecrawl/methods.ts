@@ -22,6 +22,9 @@ export const allMethods = {
 	Scraping: {
 		...apiMethods.Scraping,
 	},
+	Browser: {
+		...apiMethods.Browser,
+	},
 	Crawling: {
 		...apiMethods.Crawling,
 	},

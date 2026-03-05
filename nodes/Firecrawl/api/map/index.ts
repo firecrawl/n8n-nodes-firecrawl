@@ -8,7 +8,7 @@ import { buildApiProperties, createOperationNotice, createUrlProperty } from '..
 
 // Define the operation name and display name
 export const name = 'map';
-export const displayName = 'Map a website to discover all URLs';
+export const displayName = '/map';
 export const operationName = 'map';
 export const resourceName = 'MapSearch';
 

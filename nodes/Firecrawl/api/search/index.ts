@@ -9,7 +9,7 @@ import { createOperationNotice } from '../common';
 
 // Define the operation name and display name
 export const name = 'search';
-export const displayName = 'Search the web and scrape results';
+export const displayName = '/search';
 export const operationName = 'search';
 export const resourceName = 'MapSearch';
 
@@ -124,9 +124,9 @@ function createSourcesProperty(
 
 						const body = requestOptions.body as IDataObject;
 
-						// Ensure at least one source is selected
+						// Default to web search if no sources selected
 						if (!body.sources || (Array.isArray(body.sources) && body.sources.length === 0)) {
-							throw new Error('At least one source must be selected (web, images, or news)');
+							body.sources = [{ type: 'web' }];
 						}
 
 						return requestOptions;

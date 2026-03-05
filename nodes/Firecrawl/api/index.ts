@@ -63,6 +63,26 @@ import {
 	options as teamQueueStatusOptions,
 	properties as teamQueueStatusProperties,
 } from './teamQueueStatus';
+import {
+	options as browserCreateOptions,
+	properties as browserCreateProperties,
+} from './browserCreate';
+import {
+	options as browserExecuteOptions,
+	properties as browserExecuteProperties,
+} from './browserExecute';
+import {
+	options as browserListOptions,
+	properties as browserListProperties,
+} from './browserList';
+import {
+	options as browserDeleteOptions,
+	properties as browserDeleteProperties,
+} from './browserDelete';
+import {
+	options as browserContextOptions,
+	properties as browserContextProperties,
+} from './browserContext';
 
 /**
  * Operation options organized by resource
@@ -101,6 +121,14 @@ const accountOperationOptions: INodePropertyOptions[] = [
 	teamTokenUsageOptions,
 	teamTokenUsageHistoricalOptions,
 	teamQueueStatusOptions,
+];
+
+const browserOperationOptions: INodePropertyOptions[] = [
+	browserContextOptions,
+	browserCreateOptions,
+	browserExecuteOptions,
+	browserListOptions,
+	browserDeleteOptions,
 ];
 
 const extractOperationOptions: INodePropertyOptions[] = [
@@ -181,6 +209,20 @@ const accountOperationSelector: INodeProperties = {
 	options: accountOperationOptions,
 };
 
+const browserOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['Browser'],
+		},
+	},
+	default: 'browserContext',
+	options: browserOperationOptions,
+};
+
 const extractOperationSelector: INodeProperties = {
 	displayName: 'Operation',
 	name: 'operation',
@@ -225,6 +267,12 @@ const rawProperties: INodeProperties[] = [
 	...teamTokenUsageProperties,
 	...teamTokenUsageHistoricalProperties,
 	...teamQueueStatusProperties,
+	// Browser operations
+	...browserContextProperties,
+	...browserCreateProperties,
+	...browserExecuteProperties,
+	...browserListProperties,
+	...browserDeleteProperties,
 	// Extract operations (Legacy)
 	...extractProperties,
 	...getExtractStatusProperties,
@@ -238,6 +286,7 @@ export const apiProperties: INodeProperties[] = [
 	crawlingOperationSelector,
 	agentOperationSelector,
 	mapSearchOperationSelector,
+	browserOperationSelector,
 	accountOperationSelector,
 	extractOperationSelector,
 	...rawProperties,
@@ -357,6 +406,33 @@ export const apiMethods = {
 			},
 		},
 		teamQueueStatus: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+	},
+	Browser: {
+		browserContext: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		browserCreate: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		browserExecute: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		browserList: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		browserDelete: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
