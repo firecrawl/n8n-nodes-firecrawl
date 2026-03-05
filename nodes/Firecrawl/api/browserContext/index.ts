@@ -69,9 +69,10 @@ function createContextProperty(): INodeProperties {
 		typeOptions: {
 			rows: 15,
 		},
+		noDataExpression: true,
 		default: BROWSER_CONTEXT,
 		description:
-			'Context and instructions about the Firecrawl Browser Sandbox tools. This text is returned to the AI agent to explain what browser tools are available and how to use them. Edit this to customize the instructions for your use case.',
+			'This tool MUST be called before using any other Browser tools. It provides context and instructions about the Firecrawl Browser Sandbox to the AI agent. Edit this to customize the instructions for your use case.',
 		displayOptions: {
 			show: {
 				resource: [resourceName],

@@ -9,7 +9,7 @@ export class Firecrawl implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Firecrawl',
 		name: 'firecrawl',
-		icon: 'file:firecrawl.svg',
+		icon: 'file:firecrawl-logo.svg',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
