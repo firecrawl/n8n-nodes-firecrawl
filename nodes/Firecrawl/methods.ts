@@ -37,6 +37,9 @@ export const allMethods = {
 	Account: {
 		...apiMethods.Account,
 	},
+	Interact: {
+		...apiMethods.Interact,
+	},
 	Extract: {
 		...apiMethods.Extract,
 	},
