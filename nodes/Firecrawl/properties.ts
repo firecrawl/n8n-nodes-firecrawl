@@ -38,6 +38,10 @@ export const resourceSelect: INodeProperties[] = [
 				value: 'Extract',
 			},
 			{
+				name: 'Interact',
+				value: 'Interact',
+			},
+			{
 				name: 'Map & Search',
 				value: 'MapSearch',
 			},

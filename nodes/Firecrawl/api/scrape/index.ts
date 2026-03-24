@@ -190,6 +190,62 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
 }
 
 /**
+ * Creates the profile property for persistent browser state across interact sessions
+ */
+function createProfileProperty(): INodeProperties {
+	return {
+		displayName: 'Profile',
+		name: 'profile',
+		type: 'fixedCollection',
+		default: {},
+		description:
+			'Enable persistent browser state across interact sessions. Use profiles to maintain cookies, localStorage, and login state between scrapes. Sessions with the same profile name share storage. Required only when using the Interact feature with persistent state.',
+		options: [
+			{
+				displayName: 'Profile Settings',
+				name: 'settings',
+				values: [
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						required: true,
+						default: '',
+						description:
+							'A unique name for the profile (1-128 characters). Scrapes with the same name share browser state. Use descriptive names like "gmail-account" or "dashboard-session".',
+					},
+					{
+						displayName: 'Save Changes',
+						name: 'saveChanges',
+						type: 'boolean',
+						default: true,
+						description:
+							'Whether to save browser state (cookies, localStorage, etc.) back to the profile when the interact session stops. Set to false to load existing profile data without writing changes. Only one saving session per profile is allowed at a time.',
+					},
+				],
+			},
+		],
+		routing: {
+			request: {
+				body: {
+					profile:
+						'={{$value.settings ? { name: $value.settings.name, saveChanges: $value.settings.saveChanges } : undefined}}',
+				},
+			},
+		},
+		displayOptions: {
+			show: {
+				resource: [resourceName],
+				operation: [operationName],
+			},
+			hide: {
+				useCustomBody: [true],
+			},
+		},
+	};
+}
+
+/**
  * Create the properties for the scrape operation
  */
 function createScrapeProperties(): INodeProperties[] {
@@ -205,6 +261,9 @@ function createScrapeProperties(): INodeProperties[] {
 
 		// Scrape options
 		createScrapeOptionsProperty(operationName, false, false, resourceName),
+
+		// Profile for persistent interact sessions
+		createProfileProperty(),
 	];
 }
 

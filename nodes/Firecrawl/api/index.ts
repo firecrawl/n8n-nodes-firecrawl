@@ -83,6 +83,18 @@ import {
 	options as browserContextOptions,
 	properties as browserContextProperties,
 } from './browserContext';
+import {
+	options as interactContextOptions,
+	properties as interactContextProperties,
+} from './interactContext';
+import {
+	options as interactOptions,
+	properties as interactProperties,
+} from './interact';
+import {
+	options as interactStopOptions,
+	properties as interactStopProperties,
+} from './interactStop';
 
 /**
  * Operation options organized by resource
@@ -129,6 +141,12 @@ const browserOperationOptions: INodePropertyOptions[] = [
 	browserExecuteOptions,
 	browserListOptions,
 	browserDeleteOptions,
+];
+
+const interactOperationOptions: INodePropertyOptions[] = [
+	interactContextOptions,
+	interactOptions,
+	interactStopOptions,
 ];
 
 const extractOperationOptions: INodePropertyOptions[] = [
@@ -223,6 +241,20 @@ const browserOperationSelector: INodeProperties = {
 	options: browserOperationOptions,
 };
 
+const interactOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['Interact'],
+		},
+	},
+	default: 'interactContext',
+	options: interactOperationOptions,
+};
+
 const extractOperationSelector: INodeProperties = {
 	displayName: 'Operation',
 	name: 'operation',
@@ -273,6 +305,10 @@ const rawProperties: INodeProperties[] = [
 	...browserExecuteProperties,
 	...browserListProperties,
 	...browserDeleteProperties,
+	// Interact operations
+	...interactContextProperties,
+	...interactProperties,
+	...interactStopProperties,
 	// Extract operations (Legacy)
 	...extractProperties,
 	...getExtractStatusProperties,
@@ -287,6 +323,7 @@ export const apiProperties: INodeProperties[] = [
 	agentOperationSelector,
 	mapSearchOperationSelector,
 	browserOperationSelector,
+	interactOperationSelector,
 	accountOperationSelector,
 	extractOperationSelector,
 	...rawProperties,
@@ -433,6 +470,23 @@ export const apiMethods = {
 			},
 		},
 		browserDelete: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+	},
+	Interact: {
+		interactContext: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		interact: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		interactStop: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
