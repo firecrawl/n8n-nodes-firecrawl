@@ -16,6 +16,13 @@ const INTERACT_CONTEXT = `# Firecrawl Interact
 
 You have access to the Firecrawl Interact API. Interact lets you scrape a page first, then continue working with it — clicking buttons, filling forms, extracting dynamic content, or navigating deeper. The browser session resumes at the exact state it was in after the scrape.
 
+## CRITICAL RULES — Read before doing anything
+
+1. **Output**: In Node/JS mode, you MUST use \`process.stdout.write(data + "\\n")\` to return data. Do NOT use \`console.log()\` — it does NOT appear in the response \`stdout\` field. This is the #1 cause of empty responses.
+2. **Language match**: The Code field MUST contain valid code for the selected Language. If Language = Node, write JavaScript ONLY. If Language = Bash, write \`agent-browser\` commands ONLY. NEVER mix them — \`agent-browser\` commands are NOT JavaScript and will throw \`SyntaxError\` in Node mode.
+3. **No plain English in Code**: The Code field is executed as code. NEVER put natural language instructions like "Click the button" in the Code field — it will throw \`SyntaxError\`. Use the Prompt mode for natural language.
+4. **Persistent REPL**: The Node REPL keeps state between calls. If you declared \`const rows = ...\` in a previous call, you CANNOT use \`const rows\` again — it will throw \`SyntaxError: Identifier 'rows' has already been declared\`. Use unique variable names for each call (e.g. \`rows1\`, \`rows2\`) or wrap your code in an IIFE: \`(async () => { const rows = ...; process.stdout.write(JSON.stringify(rows)); })()\`.
+
 ## Workflow
 
 1. **Scrape** a URL using the Scrape tool (resource: Scraping, operation: /scrape). The response includes a \`scrapeId\` in \`data.metadata.scrapeId\`.
@@ -41,18 +48,27 @@ NEVER put code, CLI commands, or anything other than natural language in the Pro
 Use the Code field to execute code in the browser sandbox. The content you write in the Code field MUST be valid code for the selected Language. NEVER put natural language, descriptions, or plain English instructions in the Code field.
 
 **Language = Node (JavaScript)**
-Write valid JavaScript using the Playwright API. A \`page\` object is pre-configured and connected to the browser. Do NOT create a new browser or page. Use \`console.log()\` to return data.
+Write valid JavaScript using the Playwright API. A \`page\` object is pre-configured and connected to the browser. Do NOT create a new browser or page. Use \`process.stdout.write()\` to return data (NOT \`console.log\`).
 
 Examples:
 \`\`\`
 await page.click('#next-page');
 await page.waitForLoadState('networkidle');
 const title = await page.title();
-console.log(title);
+process.stdout.write(title + "\\n");
 \`\`\`
 \`\`\`
 const content = await page.$eval('.article-body', el => el.textContent);
-JSON.stringify({ content });
+process.stdout.write(JSON.stringify({ content }) + "\\n");
+\`\`\`
+\`\`\`
+// Use an IIFE to avoid variable re-declaration errors across calls
+(async () => {
+  const rows = await page.$$eval('table tr', trs =>
+    trs.map(r => Array.from(r.querySelectorAll('td,th')).map(c => c.textContent.trim()))
+  );
+  process.stdout.write(JSON.stringify(rows) + "\\n");
+})()
 \`\`\`
 
 **Language = Python**
@@ -68,7 +84,7 @@ print(json.dumps(data))
 \`\`\`
 
 **Language = Bash**
-Write agent-browser CLI commands. Every command MUST be prefixed with \`agent-browser\`. Chain multiple commands with \`&&\`. The CLI provides an accessibility tree with element references (\`@e1\`, \`@e2\`, ...).
+Write agent-browser CLI commands. Every command MUST be prefixed with \`agent-browser\`. Chain multiple commands with \`&&\`. The CLI provides an accessibility tree with element references (\`@e1\`, \`@e2\`, ...). IMPORTANT: \`agent-browser\` commands are ONLY valid when Language = Bash. They are NOT JavaScript and will cause SyntaxError in Node mode.
 
 Examples:
 \`\`\`
@@ -122,6 +138,8 @@ To maintain login state across scrapes, pass a \`profile\` when scraping:
 - CRITICAL: Match your content to the selected Mode. Prompt mode = natural language only. Code mode = valid code only for the selected Language.
 - When using Code mode with Bash, always prefix commands with \`agent-browser\`
 - When using Code mode with Node/Python, write valid Playwright code — never plain English
+- In Node mode, ALWAYS use \`process.stdout.write()\` — NOT \`console.log()\`
+- In Node mode, use unique variable names per call or wrap in an IIFE to avoid re-declaration errors
 - Keep prompts small and focused on one task per call
 - Always stop the session when done to save credits
 - For simple content extraction without interaction, prefer the Scrape tool — it's simpler and cheaper`;
