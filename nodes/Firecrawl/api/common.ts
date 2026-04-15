@@ -388,11 +388,11 @@ export function createActionsProperty(
 				body: useNestedScrapeOptions
 					? {
 							scrapeOptions: {
-								actions: '={{Array.isArray($value.items) ? $value.items : []}}',
+								actions: '={{Array.isArray($value.items) && $value.items.length > 0 ? $value.items : undefined}}',
 							},
 					  }
 					: {
-							actions: '={{Array.isArray($value.items) ? $value.items : []}}',
+							actions: '={{Array.isArray($value.items) && $value.items.length > 0 ? $value.items : undefined}}',
 					  },
 			},
 		},
