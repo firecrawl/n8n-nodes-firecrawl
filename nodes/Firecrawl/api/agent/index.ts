@@ -367,7 +367,6 @@ options.routing = {
 				const jobId = responseBody.id as string;
 				const credentials = await this.getCredentials('firecrawlApi');
 				const baseUrl = (credentials.baseUrl as string) || 'https://api.firecrawl.dev/v2';
-				const apiKey = credentials.apiKey as string;
 
 				// Get max wait time from node parameter (in seconds), convert to ms
 				const maxWaitTimeSeconds = this.getNodeParameter('maxWaitTime', DEFAULT_MAX_WAIT_TIME_SECONDS) as number;
@@ -405,15 +404,18 @@ options.routing = {
 
 					for (let attempt = 0; attempt < MAX_POLL_RETRIES; attempt++) {
 						try {
-							statusResponse = await this.helpers.httpRequest({
-								method: 'GET',
-								url: `${baseUrl}/agent/${jobId}`,
-								headers: {
-									Authorization: `Bearer ${apiKey}`,
-									Accept: 'application/json',
+							statusResponse = await this.helpers.httpRequestWithAuthentication.call(
+								this,
+								'firecrawlApi',
+								{
+									method: 'GET',
+									url: `${baseUrl}/agent/${jobId}`,
+									headers: {
+										Accept: 'application/json',
+									},
+									json: true,
 								},
-								json: true,
-							});
+							);
 							break; // Success, exit retry loop
 						} catch (error) {
 							lastError = error as Error;
