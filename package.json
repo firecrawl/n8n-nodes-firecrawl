@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mendableai/n8n-nodes-firecrawl.git"
+    "url": "git+https://github.com/firecrawl/n8n-nodes-firecrawl.git"
   },
   "main": "index.js",
   "scripts": {
