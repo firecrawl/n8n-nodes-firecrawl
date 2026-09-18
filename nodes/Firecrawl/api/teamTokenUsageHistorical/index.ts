@@ -1,15 +1,12 @@
-import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'teamTokenUsageHistorical';
-export const displayName = 'Get historical token usage';
+export const displayName = 'Get Historical Token Usage';
+export const action = 'Get historical token usage';
+export const description = "Get your team's Extract API token usage over past billing periods";
 export const resourceName = 'Account';
 
-function createProperties(): INodeProperties[] {
-	return [createOperationNotice(resourceName, name, 'GET')];
-}
-
-const { options, properties } = buildApiProperties(name, displayName, createProperties());
+const { options, properties } = buildApiProperties(name, displayName, action, description);
 
 options.routing = {
 	request: {

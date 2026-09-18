@@ -5,10 +5,12 @@ import {
 	INodeProperties,
 	NodeOperationError,
 } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice, extractUrls, convertToSchema } from '../common';
+import { buildApiProperties, extractUrls, convertToSchema } from '../common';
 
 const name = 'agentAsync';
-const displayName = 'Agent (Async) - Returns job ID for manual polling';
+const displayName = 'Start AI Agent Job (Async)';
+const action = 'Start AI agent job (async)';
+const description = 'Start an AI agent job to extract data and return its job ID';
 export const operationName = 'agentAsync';
 export const resourceName = 'Agent';
 
@@ -28,7 +30,7 @@ function createPromptProperty(): INodeProperties {
 		default: '',
 		description:
 			'Natural language description of the data you want to extract (max 10,000 characters). Be specific about what data you need. Examples: "Find the founders of Firecrawl", "Extract pricing information from this page", "Compare features between these products".',
-		placeholder: 'e.g., Find the founders of Firecrawl and their roles',
+		placeholder: 'e.g. Find the founders of Firecrawl and their roles',
 		routing: {
 			request: {
 				body: {
@@ -87,7 +89,7 @@ function createUrlsProperty(): INodeProperties {
 		default: '',
 		description:
 			'URLs to focus the agent on specific pages. Accepts multiple formats: a single URL, multiple URLs separated by commas or newlines, or a JSON array like ["url1", "url2"].',
-		placeholder: 'https://example.com/page1\nhttps://example.com/page2',
+		placeholder: 'e.g. https://example.com/page1\nhttps://example.com/page2',
 		routing: {
 			request: {
 				body: {
@@ -297,7 +299,6 @@ function createSchemaProperty(): INodeProperties {
  */
 function createAgentProperties(): INodeProperties[] {
 	return [
-		createOperationNotice(resourceName, name, 'POST'),
 		createPromptProperty(),
 		createSpecifyUrlsProperty(),
 		createUrlsProperty(),
@@ -308,7 +309,13 @@ function createAgentProperties(): INodeProperties[] {
 }
 
 // Build and export the properties and options
-const { options, properties } = buildApiProperties(name, displayName, createAgentProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createAgentProperties(),
+);
 
 // Override the default routing to use the /agent endpoint
 options.routing = {

@@ -8,7 +8,10 @@ import {
 import { buildApiProperties } from '../common';
 
 export const name = 'interactContext';
-export const displayName = 'Interact context';
+export const displayName = 'Get Interact Context';
+export const action = 'Get interact context';
+export const description =
+	'Get usage instructions for the Interact tools plus a list of active sessions, for AI agents';
 export const operationName = 'interactContext';
 export const resourceName = 'Interact';
 
@@ -172,6 +175,8 @@ function createInteractContextProperties(): INodeProperties[] {
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
+	action,
+	description,
 	createInteractContextProperties(),
 );
 

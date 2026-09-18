@@ -169,22 +169,25 @@ export function formatOperationName(name: string): string {
 }
 
 /**
- * Creates a standard API operation notice property
+ * Creates a notice shown under the Operation dropdown for one operation
  * @param resourceName - The name of the resource
  * @param operationName - The name of the operation
+ * @param text - The notice text (supports simple HTML, e.g. an `<a>` link)
+ * @param options - Optional `theme` (defaults to `'info'`)
  * @returns A node property for the operation notice
  */
 export function createOperationNotice(
 	resourceName: string,
 	operationName: string,
-	method: string = 'POST',
+	text: string,
+	options: { theme?: 'info' | 'warning' | 'danger' | 'success' } = {},
 ): INodeProperties {
 	return {
-		displayName: `${method} /${operationName}`,
-		name: 'operation',
+		displayName: text,
+		name: `${operationName}Notice`,
 		type: 'notice',
 		typeOptions: {
-			theme: 'info',
+			theme: options.theme ?? 'info',
 		},
 		default: '',
 		displayOptions: {
@@ -308,6 +311,7 @@ export function createActionsProperty(
 						displayName: 'Key',
 						type: 'string',
 						default: '',
+						placeholder: 'e.g. Enter',
 						description:
 							'Keyboard key to press (e.g., "Enter", "Tab", "Escape", "ArrowDown"). Use for form submission, navigation, or triggering keyboard shortcuts.',
 						name: 'key',
@@ -334,6 +338,7 @@ export function createActionsProperty(
 						displayName: 'Selector',
 						type: 'string',
 						default: '',
+						placeholder: 'e.g. #submit-btn',
 						description:
 							'CSS selector to target an element (e.g., "#submit-btn", ".load-more", "[data-testid=login]"). Used for click, write, and scroll actions.',
 						name: 'selector',
@@ -347,6 +352,7 @@ export function createActionsProperty(
 						displayName: 'Text',
 						type: 'string',
 						default: '',
+						placeholder: 'e.g. n8n automation',
 						description:
 							'Text to type into an input field. Use with selector to target the input element. Useful for search boxes, login forms, or any text input.',
 						name: 'text',
@@ -489,6 +495,7 @@ export function createLocationProperty(
 										name: 'code',
 										type: 'string',
 										default: '',
+										placeholder: 'e.g. en',
 										description: "Language code (e.g., 'en', 'fr', 'de', 'ja')",
 									},
 								],
@@ -562,7 +569,7 @@ export function createIncludeTagsProperty(
 						name: 'tag',
 						type: 'string',
 						default: '',
-						placeholder: 'header',
+						placeholder: 'e.g. header',
 						description: 'Tag to include in the output',
 					},
 				],
@@ -618,7 +625,7 @@ export function createBatchUrlsProperty(
 		required: true,
 		description:
 			'URLs to scrape in batch. Accepts multiple formats: a single URL, multiple URLs separated by commas or newlines, a JSON array like ["url1", "url2"], or an array expression from a previous node. Each URL is scraped independently with the same settings. Example: "https://example.com/page1, https://example.com/page2" or paste one URL per line.',
-		placeholder: 'https://example.com/page1\nhttps://example.com/page2',
+		placeholder: 'e.g. https://example.com/page1\nhttps://example.com/page2',
 		routing: {
 			request: {
 				body: {
@@ -702,7 +709,7 @@ export function createExcludeTagsProperty(
 						name: 'tag',
 						type: 'string',
 						default: '',
-						placeholder: 'footer',
+						placeholder: 'e.g. footer',
 						description: 'Tag to exclude from the output',
 					},
 				],
@@ -766,6 +773,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 							type: 'string',
 							required: true,
 							default: '',
+							placeholder: 'e.g. https://example.com/webhook',
 							description:
 								'The URL to send the webhook to. Triggers for batchScrape.started, batchScrape.page, batchScrape.completed, or batchScrape.failed events.',
 						},
@@ -788,6 +796,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 											name: 'key',
 											type: 'string',
 											default: '',
+											placeholder: 'e.g. X-Api-Key',
 											description: 'Header key',
 										},
 										{
@@ -795,6 +804,7 @@ function createBatchSpecificProperties(): INodeProperties[] {
 											name: 'value',
 											type: 'string',
 											default: '',
+											placeholder: 'e.g. abc123',
 											description: 'Header value',
 										},
 									],
@@ -991,6 +1001,7 @@ export function createScrapeOptionsProperty(
 										name: 'prompt',
 										type: 'string',
 										default: '',
+										placeholder: 'e.g. Extract the product name and price',
 										description: 'Prompt for JSON format extraction',
 										displayOptions: {
 											show: {
@@ -1003,6 +1014,7 @@ export function createScrapeOptionsProperty(
 										name: 'prompt',
 										type: 'string',
 										default: '',
+										placeholder: 'e.g. Track changes to pricing only',
 										description: 'Prompt for change tracking',
 										displayOptions: {
 											show: {
@@ -1055,6 +1067,7 @@ export function createScrapeOptionsProperty(
 										name: 'tag',
 										type: 'string',
 										default: '',
+										placeholder: 'e.g. pricing-page',
 										description: 'Tag for change tracking',
 										displayOptions: {
 											show: {
@@ -1169,6 +1182,7 @@ export function createScrapeOptionsProperty(
 								name: 'key',
 								type: 'string',
 								default: '',
+								placeholder: 'e.g. Authorization',
 								description: 'Key of the header',
 							},
 							{
@@ -1176,6 +1190,7 @@ export function createScrapeOptionsProperty(
 								name: 'value',
 								type: 'string',
 								default: '',
+								placeholder: 'e.g. Bearer abc123',
 								description: 'Value of the header',
 							},
 						],
@@ -1279,19 +1294,27 @@ export function createScrapeOptionsProperty(
 
 /**
  * Creates a standard API operation option
- * @param name - The name of the operation
- * @param action - The display name for the action
+ * @param operationName - The operation identifier, e.g. 'scrape'
+ * @param displayName - The label shown in the Operation dropdown
+ * @param action - The action shown in the node creator, e.g. 'Scrape URL'
+ * @param description - The description shown under the option in the dropdown
  * @returns A node property option for the operation
  */
-export function createOperationOption(name: string, action: string): INodePropertyOptions {
+export function createOperationOption(
+	operationName: string,
+	displayName: string,
+	action: string,
+	description: string,
+): INodePropertyOptions {
 	return {
-		name: action,
-		value: name,
+		name: displayName,
+		value: operationName,
 		action,
+		description,
 		routing: {
 			request: {
 				method: 'POST',
-				url: `=/${name}`,
+				url: `=/${operationName}`,
 			},
 		},
 	};
@@ -1299,12 +1322,20 @@ export function createOperationOption(name: string, action: string): INodeProper
 
 /**
  * Builds API properties with options
- * @param name - The name of the operation
- * @param action - The display name for the action
+ * @param operationName - The operation identifier, e.g. 'scrape'
+ * @param displayName - The label shown in the Operation dropdown
+ * @param action - The action shown in the node creator, e.g. 'Scrape URL'
+ * @param description - The description shown under the option in the dropdown
  * @param properties - The properties for the operation
  * @returns An object containing options and properties
  */
-export function buildApiProperties(name: string, action: string, properties: INodeProperties[]) {
-	const option = createOperationOption(name, action);
+export function buildApiProperties(
+	operationName: string,
+	displayName: string,
+	action: string,
+	description: string,
+	properties: INodeProperties[] = [],
+) {
+	const option = createOperationOption(operationName, displayName, action, description);
 	return buildPropertiesWithOptions(option, properties);
 }

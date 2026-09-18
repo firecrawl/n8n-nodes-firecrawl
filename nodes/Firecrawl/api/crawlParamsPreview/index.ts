@@ -1,8 +1,11 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice, createUrlProperty } from '../common';
+import { buildApiProperties, createUrlProperty } from '../common';
 
 export const name = 'crawlParamsPreview';
-export const displayName = 'Preview crawl params from prompt';
+export const displayName = 'Preview Crawl Parameters';
+export const action = 'Preview crawl parameters from prompt';
+export const description =
+	'Generate crawl parameters from a natural language prompt without starting a crawl';
 export const resourceName = 'Crawling';
 
 function createPromptProperty(): INodeProperties {
@@ -12,6 +15,7 @@ function createPromptProperty(): INodeProperties {
 		type: 'string',
 		default: '',
 		required: true,
+		placeholder: 'e.g. Focus on product pages and pricing information',
 		description: 'Natural language prompt describing crawl behavior',
 		routing: {
 			request: {
@@ -30,10 +34,16 @@ function createPromptProperty(): INodeProperties {
 }
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice(resourceName, name), createUrlProperty(name, undefined, resourceName), createPromptProperty()];
+	return [createUrlProperty(name, undefined, resourceName), createPromptProperty()];
 }
 
-const { options, properties } = buildApiProperties(name, displayName, createProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createProperties(),
+);
 
 options.routing = {
 	request: {

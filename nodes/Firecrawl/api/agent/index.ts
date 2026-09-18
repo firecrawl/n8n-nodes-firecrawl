@@ -8,10 +8,12 @@ import {
 	NodeOperationError,
 	sleep,
 } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice, extractUrls, convertToSchema } from '../common';
+import { buildApiProperties, extractUrls, convertToSchema } from '../common';
 
 const name = 'agent';
-const displayName = 'Agent - AI-powered web data extraction (waits for completion)';
+const displayName = 'Extract Data With AI Agent';
+const action = 'Extract data with AI agent';
+const description = 'Run an AI agent that browses the web to extract data and wait for it to finish';
 export const operationName = 'agent';
 export const resourceName = 'Agent';
 
@@ -35,7 +37,7 @@ function createPromptProperty(): INodeProperties {
 		default: '',
 		description:
 			'Natural language description of the data you want to extract (max 10,000 characters). Be specific about what data you need. Examples: "Find the founders of Firecrawl", "Extract pricing information from this page", "Compare features between these products".',
-		placeholder: 'e.g., Find the founders of Firecrawl and their roles',
+		placeholder: 'e.g. Find the founders of Firecrawl and their roles',
 		routing: {
 			request: {
 				body: {
@@ -94,7 +96,7 @@ function createUrlsProperty(): INodeProperties {
 		default: '',
 		description:
 			'URLs to focus the agent on specific pages. Accepts multiple formats: a single URL, multiple URLs separated by commas or newlines, or a JSON array like ["url1", "url2"].',
-		placeholder: 'https://example.com/page1\nhttps://example.com/page2',
+		placeholder: 'e.g. https://example.com/page1\nhttps://example.com/page2',
 		routing: {
 			request: {
 				body: {
@@ -331,7 +333,6 @@ function createMaxWaitTimeProperty(): INodeProperties {
  */
 function createAgentProperties(): INodeProperties[] {
 	return [
-		createOperationNotice(resourceName, name, 'POST'),
 		createPromptProperty(),
 		createSpecifyUrlsProperty(),
 		createUrlsProperty(),
@@ -343,7 +344,13 @@ function createAgentProperties(): INodeProperties[] {
 }
 
 // Build and export the properties and options
-const { options, properties } = buildApiProperties(name, displayName, createAgentProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createAgentProperties(),
+);
 
 // Override the default routing to use the /agent endpoint with polling
 options.routing = {

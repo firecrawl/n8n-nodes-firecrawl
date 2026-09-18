@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'cancelCrawl';
-export const displayName = 'Cancel a crawl job';
+export const displayName = 'Cancel Crawl Job';
+export const action = 'Cancel a crawl job';
+export const description = 'Cancel a running crawl job';
 export const resourceName = 'Crawling';
 
 function createCrawlIdProperty(): INodeProperties {
@@ -12,6 +14,7 @@ function createCrawlIdProperty(): INodeProperties {
 		type: 'string',
 		required: true,
 		default: '',
+		placeholder: 'e.g. 550e8400-e29b-41d4-a716-446655440000',
 		description: 'ID of the crawl job to cancel',
 		routing: {
 			request: {
@@ -28,10 +31,16 @@ function createCrawlIdProperty(): INodeProperties {
 }
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice(resourceName, name, 'DELETE'), createCrawlIdProperty()];
+	return [createCrawlIdProperty()];
 }
 
-const { options, properties } = buildApiProperties(name, displayName, createProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createProperties(),
+);
 
 options.routing = {
 	request: {

@@ -4,12 +4,24 @@ import {
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice, createScrapeOptionsProperty } from '../common';
+import {
+	buildApiProperties,
+	createOperationNotice,
+	createScrapeOptionsProperty,
+} from '../common';
 
 const name = 'extract';
-const displayName = 'Extract structured data from websites using AI';
+const displayName = 'Extract Structured Data';
+const action = 'Extract structured data';
+const description =
+	'Extract structured data (Agent is recommended for new workflows)';
 export const operationName = 'extract';
 export const resourceName = 'Extract';
+
+// The docs recommend `/agent` over the v2 `/extract` endpoint as faster, more reliable,
+// not requiring URLs upfront, and covering all Extract use cases plus more.
+const EXTRACT_DEPRECATED_NOTICE_TEXT =
+	`We recommend using the 'Agent → Extract Data With AI Agent' operation instead. It's faster, more reliable, doesn't require URLs, and handles all Extract use cases plus more. <a href="https://docs.firecrawl.dev/developer-guides/usage-guides/choosing-the-data-extractor" target="_blank">Learn more</a>`
 
 /**
  * Creates the URLs property
@@ -37,7 +49,7 @@ function createUrlsProperty(): INodeProperties {
 						name: 'url',
 						type: 'string',
 						default: '',
-						placeholder: 'https://example.com/*',
+						placeholder: 'e.g. https://example.com/*',
 						description: 'URL to extract data from (supports glob format)',
 					},
 				],
@@ -69,6 +81,7 @@ function createPromptProperty(): INodeProperties {
 		name: 'prompt',
 		type: 'string',
 		default: '',
+		placeholder: 'e.g. Extract product names, prices and descriptions',
 		description:
 			'Natural language instructions for the AI to guide data extraction. Be specific about what data you want (e.g., "Extract product names, prices, and descriptions from this e-commerce page").',
 		routing: {
@@ -303,7 +316,9 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
  */
 function createExtractProperties(): INodeProperties[] {
 	return [
-		createOperationNotice(resourceName, name, 'POST'),
+		createOperationNotice(resourceName, operationName, EXTRACT_DEPRECATED_NOTICE_TEXT, {
+			theme: 'warning',
+		}),
 		createUrlsProperty(),
 		createPromptProperty(),
 		createSchemaProperty(),
@@ -316,7 +331,13 @@ function createExtractProperties(): INodeProperties[] {
 }
 
 // Build and export the properties and options
-const { options, properties } = buildApiProperties(name, displayName, createExtractProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createExtractProperties(),
+);
 
 // Add the additional fields property separately so it appears only when custom body is enabled
 properties.push(createAdditionalFieldsProperty(name));

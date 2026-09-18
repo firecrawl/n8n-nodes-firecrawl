@@ -4,11 +4,13 @@ import {
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice, createUrlProperty } from '../common';
+import { buildApiProperties, createUrlProperty } from '../common';
 
 // Define the operation name and display name
 export const name = 'map';
-export const displayName = '/map';
+export const displayName = 'Map Website';
+export const action = 'Map website';
+export const description = 'Discover and list the URLs of a website';
 export const operationName = 'map';
 export const resourceName = 'MapSearch';
 
@@ -214,9 +216,6 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
  */
 function createMapProperties(): INodeProperties[] {
 	return [
-		// Operation notice
-		createOperationNotice(resourceName, name),
-
 		createUrlProperty(name, undefined, resourceName),
 
 		createSitemapProperty(),
@@ -230,7 +229,13 @@ function createMapProperties(): INodeProperties[] {
 }
 
 // Build and export the properties and options
-const { options, properties } = buildApiProperties(name, displayName, createMapProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createMapProperties(),
+);
 
 // Add the additional fields property separately so it appears only when custom body is enabled
 properties.push(createAdditionalFieldsProperty(name));

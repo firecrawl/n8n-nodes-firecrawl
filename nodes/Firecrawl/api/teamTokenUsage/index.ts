@@ -1,15 +1,12 @@
-import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'teamTokenUsage';
-export const displayName = 'Get team token usage';
+export const displayName = 'Get Team Token Usage';
+export const action = 'Get team token usage';
+export const description = "Get your team's remaining tokens for the Extract API";
 export const resourceName = 'Account';
 
-function createProperties(): INodeProperties[] {
-	return [createOperationNotice(resourceName, name, 'GET')];
-}
-
-const { options, properties } = buildApiProperties(name, displayName, createProperties());
+const { options, properties } = buildApiProperties(name, displayName, action, description);
 
 options.routing = {
 	request: {

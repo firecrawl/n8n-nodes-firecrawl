@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'interact';
-export const displayName = 'Execute interaction';
+export const displayName = 'Execute Interaction';
+export const action = 'Execute interaction on scraped page';
+export const description = 'Continue interacting with the page from a previous scrape using a prompt or code';
 export const operationName = 'interact';
 export const resourceName = 'Interact';
 
@@ -15,7 +17,7 @@ function createScrapeIdProperty(): INodeProperties {
 		default: '',
 		description:
 			'The scrape job ID from a previous Scrape operation. Found in the response at data.metadata.scrapeId. The interact session resumes the browser at the exact page state from the scrape.',
-		placeholder: '550e8400-e29b-41d4-a716-446655440000',
+		placeholder: 'e.g. 550e8400-e29b-41d4-a716-446655440000',
 		routing: {
 			request: {
 				url: '=/scrape/{{$value}}/interact',
@@ -74,7 +76,7 @@ function createPromptProperty(): INodeProperties {
 		default: '',
 		description:
 			'Natural language instruction for the AI agent (max 10,000 characters). Describe a single, focused task. The agent handles clicking, typing, scrolling, and data extraction automatically. Examples: "Click the Sign In button", "Type test@example.com into the email field", "What are the prices listed on this page?".',
-		placeholder: 'Click the Sign In button and wait for the login form to appear',
+		placeholder: 'e.g. Click the Sign In button and wait for the login form to appear',
 		routing: {
 			request: {
 				body: {
@@ -207,7 +209,6 @@ function createTimeoutProperty(): INodeProperties {
 
 function createInteractProperties(): INodeProperties[] {
 	return [
-		createOperationNotice(resourceName, name, 'POST'),
 		createScrapeIdProperty(),
 		createModeProperty(),
 		createPromptProperty(),
@@ -220,6 +221,8 @@ function createInteractProperties(): INodeProperties[] {
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
+	action,
+	description,
 	createInteractProperties(),
 );
 

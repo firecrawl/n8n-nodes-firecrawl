@@ -4,10 +4,12 @@ import {
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'browserList';
-export const displayName = 'List browser sessions';
+export const displayName = 'Get Many Browser Sessions';
+export const action = 'Get many browser sessions';
+export const description = 'List your browser sessions, optionally filtered by status';
 export const operationName = 'browserList';
 export const resourceName = 'Browser';
 
@@ -63,15 +65,14 @@ function createStatusFilterProperty(): INodeProperties {
 }
 
 function createBrowserListProperties(): INodeProperties[] {
-	return [
-		createOperationNotice(resourceName, name, 'GET'),
-		createStatusFilterProperty(),
-	];
+	return [createStatusFilterProperty()];
 }
 
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
+	action,
+	description,
 	createBrowserListProperties(),
 );
 

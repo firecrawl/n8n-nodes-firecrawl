@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 const name = 'getExtractStatus';
 const displayName = 'Get Extract Status';
+const action = 'Get extract status';
+const description = 'Get the status and results of an extract job';
 export const operationName = 'getExtractStatus';
 export const resourceName = 'Extract';
 
@@ -18,7 +20,7 @@ function createExtractIdProperty(): INodeProperties {
 		required: true,
 		default: '',
 		description: 'ID of the extract job to get status for',
-		placeholder: '1234abcd-5678-efgh-9012-ijklmnopqrst',
+		placeholder: 'e.g. 550e8400-e29b-41d4-a716-446655440000',
 		routing: {
 			request: {
 				url: '=/extract/{{$value}}',
@@ -38,13 +40,15 @@ function createExtractIdProperty(): INodeProperties {
  * @returns Array of properties for the get extract status operation
  */
 function createGetExtractStatusProperties(): INodeProperties[] {
-	return [createOperationNotice(resourceName, name, 'GET'), createExtractIdProperty()];
+	return [createExtractIdProperty()];
 }
 
 // Build and export the properties and options
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
+	action,
+	description,
 	createGetExtractStatusProperties(),
 );
 

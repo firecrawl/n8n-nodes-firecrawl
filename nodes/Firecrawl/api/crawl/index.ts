@@ -4,16 +4,13 @@ import {
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
-import {
-	buildApiProperties,
-	createOperationNotice,
-	createScrapeOptionsProperty,
-	createUrlProperty,
-} from '../common';
+import { buildApiProperties, createScrapeOptionsProperty, createUrlProperty } from '../common';
 
 // Define the operation name and display name
 export const name = 'crawl';
-export const displayName = 'Crawl a website and scrape all pages';
+export const displayName = 'Crawl Website';
+export const action = 'Crawl website';
+export const description = 'Crawl a website and scrape pages based on defined options';
 export const operationName = 'crawl';
 export const resourceName = 'Crawling';
 
@@ -48,7 +45,7 @@ function createExcludePathsProperty(
 						name: 'path',
 						type: 'string',
 						default: '',
-						placeholder: 'blog/*',
+						placeholder: 'e.g. blog/*',
 						description:
 							'Path pattern to exclude (e.g., blog/* will exclude paths like /blog/article-1)',
 					},
@@ -107,7 +104,7 @@ function createIncludePathsProperty(
 						name: 'path',
 						type: 'string',
 						default: '',
-						placeholder: 'blog/*',
+						placeholder: 'e.g. blog/*',
 						description:
 							'Path pattern to include (e.g., blog/* will only include paths like /blog/article-1)',
 					},
@@ -272,6 +269,7 @@ function createPromptProperty(operationName: string): INodeProperties {
 		name: 'prompt',
 		type: 'string',
 		default: '',
+		placeholder: 'e.g. Focus on product pages and pricing information',
 		description:
 			'Natural language instructions to guide the crawl. Use to specify what content to focus on, pages to prioritize, or extraction goals (e.g., "Focus on product pages and pricing information").',
 		routing: {
@@ -294,6 +292,33 @@ function createPromptProperty(operationName: string): INodeProperties {
 }
 
 /**
+ * Creates a notice warning version 1 users that Ignore Sitemap sends a v1-only
+ * parameter, which returns a 400 error if used with the v2 Firecrawl API
+ * @param operationName - The name of the operation
+ * @returns The version 1 Ignore Sitemap notice property
+ */
+function createIgnoreSitemapVersionNoticeProperty(operationName: string): INodeProperties {
+	return {
+		displayName:
+			'Ignore Sitemap is a v1 API option. The v2 API (the default Base URL) rejects it with a 400 error even when it is turned off. Remove this option, or re-add the Firecrawl node to use the new Sitemap option instead.',
+		name: 'ignoreSitemapVersionNotice',
+		type: 'notice',
+		typeOptions: {
+			theme: 'warning',
+		},
+		default: '',
+		displayOptions: {
+			show: {
+				resource: [resourceName],
+				operation: [operationName],
+				'@version': [1],
+				'/crawlOptions.ignoreSitemap': [{ _cnd: { exists: true } }],
+			},
+		},
+	};
+}
+
+/**
  * Creates the crawl options property
  * @param operationName - The name of the operation
  * @returns The crawl options property
@@ -306,36 +331,6 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 		placeholder: 'Add Option',
 		default: {},
 		options: [
-			{
-				displayName: 'Ignore Sitemap',
-				name: 'ignoreSitemap',
-				type: 'boolean',
-				default: false,
-				description:
-					'Whether to skip reading the website\'s sitemap.xml. Enable if the sitemap is inaccurate, outdated, or you want to discover pages through link following only.',
-				routing: {
-					request: {
-						body: {
-							ignoreSitemap: '={{ $value }}',
-						},
-					},
-				},
-			},
-			{
-				displayName: 'Ignore Query Params',
-				name: 'ignoreQueryParameters',
-				type: 'boolean',
-				default: false,
-				description:
-					'Whether to treat URLs with different query parameters as the same page. Enable to avoid duplicate scrapes of pages like /products?page=1 and /products?page=2.',
-				routing: {
-					request: {
-						body: {
-							ignoreQueryParameters: '={{ $value }}',
-						},
-					},
-				},
-			},
 			{
 				displayName: 'Allow External Links',
 				name: 'allowExternalLinks',
@@ -362,6 +357,81 @@ function createCrawlOptionsProperty(operationName: string): INodeProperties {
 					request: {
 						body: {
 							allowSubdomains: '={{ $value }}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Ignore Query Params',
+				name: 'ignoreQueryParameters',
+				type: 'boolean',
+				default: false,
+				description:
+					'Whether to treat URLs with different query parameters as the same page. Enable to avoid duplicate scrapes of pages like /products?page=1 and /products?page=2.',
+				routing: {
+					request: {
+						body: {
+							ignoreQueryParameters: '={{ $value }}',
+						},
+					},
+				},
+			},
+			{
+				// Deprecated in node version 1.1+ in favor of the 'Sitemap' option below, which
+				// matches the Map operation and the v2 API specification. Kept as-is for
+				// version 1 workflows.
+				displayName: 'Ignore Sitemap',
+				name: 'ignoreSitemap',
+				type: 'boolean',
+				default: false,
+				description:
+					'Whether to skip reading the website\'s sitemap.xml. Enable if the sitemap is inaccurate, outdated, or you want to discover pages through link following only.',
+				displayOptions: {
+					show: {
+						'@version': [1],
+					},
+				},
+				routing: {
+					request: {
+						body: {
+							ignoreSitemap: '={{ $value }}',
+						},
+					},
+				},
+			},
+			{
+				displayName: 'Sitemap',
+				name: 'sitemap',
+				type: 'options',
+				options: [
+					{
+						name: 'Include',
+						value: 'include',
+						description: 'Use sitemap plus link discovery (default, most comprehensive)',
+					},
+					{
+						name: 'Only',
+						value: 'only',
+						description: 'Only crawl URLs from sitemap.xml (fastest, but may miss pages)',
+					},
+					{
+						name: 'Skip',
+						value: 'skip',
+						description: 'Ignore sitemap, discover pages through links only',
+					},
+				],
+				default: 'include',
+				description:
+					'Control how URLs are discovered. "Include" combines sitemap with link crawling for best coverage. "Only" is fastest but limited to sitemap. "Skip" relies purely on link following.',
+				displayOptions: {
+					show: {
+						'@version': [{ _cnd: { gte: 1.1 } }],
+					},
+				},
+				routing: {
+					request: {
+						body: {
+							sitemap: '={{ $value }}',
 						},
 					},
 				},
@@ -452,9 +522,6 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
  */
 function createCrawlProperties(): INodeProperties[] {
 	return [
-		// Operation notice
-		createOperationNotice(resourceName, name),
-
 		// URL input
 		createUrlProperty(name, 'https://firecrawl.dev', resourceName),
 
@@ -479,13 +546,22 @@ function createCrawlProperties(): INodeProperties[] {
 		// Crawl options
 		createCrawlOptionsProperty(operationName),
 
+		// Version 1 Ignore Sitemap notice
+		createIgnoreSitemapVersionNoticeProperty(operationName),
+
 		// Scrape options
 		createScrapeOptionsProperty(operationName, true, false, resourceName),
 	];
 }
 
 // Build and export the properties and options
-const { options, properties } = buildApiProperties(name, displayName, createCrawlProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createCrawlProperties(),
+);
 
 // Add the additional fields property separately so it appears only when custom body is enabled
 properties.push(createAdditionalFieldsProperty(name));

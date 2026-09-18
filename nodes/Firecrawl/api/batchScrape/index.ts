@@ -7,13 +7,14 @@ import {
 import {
 	buildApiProperties,
 	createBatchUrlsProperty,
-	createOperationNotice,
 	createScrapeOptionsProperty,
 } from '../common';
 
 // Define the operation name and display name
 export const name = 'batchScrape';
-export const displayName = 'Batch scrape multiple URLs simultaneously';
+export const displayName = 'Batch Scrape URLs';
+export const action = 'Batch scrape URLs';
+export const description = 'Scrape multiple URLs in one job and optionally extract information using AI';
 export const operationName = 'batchScrape';
 export const resourceName = 'Scraping';
 
@@ -194,9 +195,6 @@ function createAdditionalFieldsProperty(operation: string): INodeProperties {
  */
 function createScrapeProperties(): INodeProperties[] {
 	return [
-		// Operation notice
-		createOperationNotice(resourceName, name, 'POST'),
-
 		// URL input
 		createBatchUrlsProperty(name, '', resourceName),
 
@@ -209,7 +207,13 @@ function createScrapeProperties(): INodeProperties[] {
 }
 
 // Build and export the properties and options
-const { options, properties } = buildApiProperties(name, displayName, createScrapeProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createScrapeProperties(),
+);
 
 // Override the URL for batch operations
 options.routing = {

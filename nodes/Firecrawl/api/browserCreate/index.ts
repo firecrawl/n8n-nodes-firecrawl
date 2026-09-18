@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'browserCreate';
-export const displayName = 'Create browser session';
+export const displayName = 'Create Browser Session';
+export const action = 'Create browser session';
+export const description = 'Launch a new sandboxed cloud browser session';
 export const operationName = 'browserCreate';
 export const resourceName = 'Browser';
 
@@ -87,6 +89,7 @@ function createProfileProperty(): INodeProperties {
 						type: 'string',
 						required: true,
 						default: '',
+						placeholder: 'e.g. my-login-session',
 						description:
 							'A unique name for the profile (1-128 characters). Sessions with the same name share storage. Use descriptive names like "gmail-account" or "dashboard-session" to organize your profiles.',
 					},
@@ -122,17 +125,14 @@ function createProfileProperty(): INodeProperties {
 }
 
 function createBrowserCreateProperties(): INodeProperties[] {
-	return [
-		createOperationNotice(resourceName, name, 'POST'),
-		createTtlProperty(),
-		createActivityTtlProperty(),
-		createProfileProperty(),
-	];
+	return [createTtlProperty(), createActivityTtlProperty(), createProfileProperty()];
 }
 
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
+	action,
+	description,
 	createBrowserCreateProperties(),
 );
 

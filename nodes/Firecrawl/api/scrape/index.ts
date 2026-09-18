@@ -4,16 +4,13 @@ import {
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
 } from 'n8n-workflow';
-import {
-	buildApiProperties,
-	createOperationNotice,
-	createScrapeOptionsProperty,
-	createUrlProperty,
-} from '../common';
+import { buildApiProperties, createScrapeOptionsProperty, createUrlProperty } from '../common';
 
 // Define the operation name and display name
 export const name = 'scrape';
-export const displayName = '/scrape';
+export const displayName = 'Scrape URL';
+export const action = 'Scrape URL';
+export const description = 'Scrape a single URL and optionally extract information using AI';
 export const operationName = 'scrape';
 export const resourceName = 'Scraping';
 
@@ -211,6 +208,7 @@ function createProfileProperty(): INodeProperties {
 						type: 'string',
 						required: true,
 						default: '',
+						placeholder: 'e.g. my-login-session',
 						description:
 							'A unique name for the profile (1-128 characters). Scrapes with the same name share browser state. Use descriptive names like "gmail-account" or "dashboard-session".',
 					},
@@ -250,9 +248,6 @@ function createProfileProperty(): INodeProperties {
  */
 function createScrapeProperties(): INodeProperties[] {
 	return [
-		// Operation notice
-		createOperationNotice(resourceName, name),
-
 		// URL input
 		createUrlProperty(name, 'https://firecrawl.dev', resourceName),
 
@@ -268,7 +263,13 @@ function createScrapeProperties(): INodeProperties[] {
 }
 
 // Build and export the properties and options
-const { options, properties } = buildApiProperties(name, displayName, createScrapeProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createScrapeProperties(),
+);
 
 // Add the additional fields property separately so it appears only when custom body is enabled
 properties.push(createAdditionalFieldsProperty(name));

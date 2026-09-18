@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'batchScrapeStatus';
-export const displayName = 'Get batch scrape status';
+export const displayName = 'Get Batch Scrape Status';
+export const action = 'Get batch scrape status';
+export const description = 'Get the status and results of a batch scrape job';
 export const resourceName = 'Scraping';
 
 function createBatchIdProperty(): INodeProperties {
@@ -12,6 +14,7 @@ function createBatchIdProperty(): INodeProperties {
 		type: 'string',
 		required: true,
 		default: '',
+		placeholder: 'e.g. 550e8400-e29b-41d4-a716-446655440000',
 		description: 'ID of the batch scrape job',
 		routing: {
 			request: {
@@ -28,10 +31,16 @@ function createBatchIdProperty(): INodeProperties {
 }
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice(resourceName, name, 'GET'), createBatchIdProperty()];
+	return [createBatchIdProperty()];
 }
 
-const { options, properties } = buildApiProperties(name, displayName, createProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createProperties(),
+);
 
 options.routing = {
 	request: {

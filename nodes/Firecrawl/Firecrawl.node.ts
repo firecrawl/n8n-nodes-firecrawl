@@ -11,7 +11,8 @@ export class Firecrawl implements INodeType {
 		name: 'firecrawl',
 		icon: 'file:firecrawl-logo.svg',
 		group: ['transform'],
-		version: 1,
+		version: [1, 1.1],
+		defaultVersion: 1.1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Scrape, crawl, map, search, and extract structured data from websites using Firecrawl API',
 		defaults: {

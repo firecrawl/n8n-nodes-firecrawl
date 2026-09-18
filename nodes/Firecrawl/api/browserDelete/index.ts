@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'browserDelete';
-export const displayName = 'Delete browser session';
+export const displayName = 'Delete Browser Session';
+export const action = 'Delete browser session';
+export const description = 'Destroy a browser session and release its resources';
 export const operationName = 'browserDelete';
 export const resourceName = 'Browser';
 
@@ -14,8 +16,8 @@ function createSessionIdProperty(): INodeProperties {
 		required: true,
 		default: '',
 		description:
-			'The unique identifier of the browser session to destroy. This immediately terminates the session and releases all associated resources. Obtain the session ID from the "Create browser session" or "List browser sessions" operations. The session must exist (active or not yet cleaned up).',
-		placeholder: '550e8400-e29b-41d4-a716-446655440000',
+			'The unique identifier of the browser session to destroy. This immediately terminates the session and releases all associated resources. Obtain the session ID from the "Create Browser Session" or "Get Many Browser Sessions" operations. The session must exist (active or not yet cleaned up).',
+		placeholder: 'e.g. 550e8400-e29b-41d4-a716-446655440000',
 		routing: {
 			request: {
 				url: '=/browser/{{$value}}',
@@ -31,15 +33,14 @@ function createSessionIdProperty(): INodeProperties {
 }
 
 function createBrowserDeleteProperties(): INodeProperties[] {
-	return [
-		createOperationNotice(resourceName, name, 'DELETE'),
-		createSessionIdProperty(),
-	];
+	return [createSessionIdProperty()];
 }
 
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
+	action,
+	description,
 	createBrowserDeleteProperties(),
 );
 

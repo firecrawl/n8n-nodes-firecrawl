@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'browserExecute';
-export const displayName = 'Execute browser code';
+export const displayName = 'Execute Browser Code';
+export const action = 'Execute code in browser session';
+export const description = 'Run Playwright or agent-browser code inside a browser session';
 export const operationName = 'browserExecute';
 export const resourceName = 'Browser';
 
@@ -14,8 +16,8 @@ function createSessionIdProperty(): INodeProperties {
 		required: true,
 		default: '',
 		description:
-			'The unique identifier of the browser session to execute code in. Obtain this from the "Create browser session" operation. The session must be active (not expired or destroyed).',
-		placeholder: '550e8400-e29b-41d4-a716-446655440000',
+			'The unique identifier of the browser session to execute code in. Obtain this from the "Create Browser Session" operation. The session must be active (not expired or destroyed).',
+		placeholder: 'e.g. 550e8400-e29b-41d4-a716-446655440000',
 		routing: {
 			request: {
 				url: '=/browser/{{$value}}/execute',
@@ -140,7 +142,6 @@ function createTimeoutProperty(): INodeProperties {
 
 function createBrowserExecuteProperties(): INodeProperties[] {
 	return [
-		createOperationNotice(resourceName, name, 'POST'),
 		createSessionIdProperty(),
 		createCodeProperty(),
 		createLanguageProperty(),
@@ -151,6 +152,8 @@ function createBrowserExecuteProperties(): INodeProperties[] {
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
+	action,
+	description,
 	createBrowserExecuteProperties(),
 );
 

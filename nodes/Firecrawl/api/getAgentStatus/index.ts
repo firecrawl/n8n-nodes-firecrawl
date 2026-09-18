@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 const name = 'getAgentStatus';
 const displayName = 'Get Agent Status';
+const action = 'Get agent status';
+const description = 'Get the status and results of an agent job';
 export const operationName = 'getAgentStatus';
 export const resourceName = 'Agent';
 
@@ -19,7 +21,7 @@ function createAgentIdProperty(): INodeProperties {
 		default: '',
 		description:
 			'ID of the agent job to get status for. Returns status (processing, completed, failed), extracted data, credits used, and expiration time. Job results are available for 24 hours after completion.',
-		placeholder: '1234abcd-5678-efgh-9012-ijklmnopqrst',
+		placeholder: 'e.g. 550e8400-e29b-41d4-a716-446655440000',
 		routing: {
 			request: {
 				url: '=/agent/{{$value}}',
@@ -39,13 +41,15 @@ function createAgentIdProperty(): INodeProperties {
  * @returns Array of properties for the get agent status operation
  */
 function createGetAgentStatusProperties(): INodeProperties[] {
-	return [createOperationNotice(resourceName, name, 'GET'), createAgentIdProperty()];
+	return [createAgentIdProperty()];
 }
 
 // Build and export the properties and options
 const { options, properties } = buildApiProperties(
 	name,
 	displayName,
+	action,
+	description,
 	createGetAgentStatusProperties(),
 );
 

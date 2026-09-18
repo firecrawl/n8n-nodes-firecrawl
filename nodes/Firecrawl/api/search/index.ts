@@ -5,11 +5,12 @@ import {
 	IHttpRequestOptions,
 } from 'n8n-workflow';
 import { buildApiProperties } from '../common';
-import { createOperationNotice } from '../common';
 
 // Define the operation name and display name
 export const name = 'search';
-export const displayName = '/search';
+export const displayName = 'Search Web';
+export const action = 'Search web';
+export const description = 'Search the web and optionally scrape the results';
 export const operationName = 'search';
 export const resourceName = 'MapSearch';
 
@@ -23,6 +24,7 @@ function createQueryProperty(operationName: string): INodeProperties {
 		type: 'string',
 		default: '',
 		required: true,
+		placeholder: 'e.g. latest n8n release notes',
 		description:
 			'The search query to find relevant web pages. Use natural language like you would in a search engine. Results are scraped and returned with their content.',
 		routing: {
@@ -156,6 +158,7 @@ function createTimeBasedSearchProperty(operation: string): INodeProperties {
 		name: 'tbs',
 		type: 'string',
 		default: '',
+		placeholder: 'e.g. qdr:w',
 		description:
 			'Filter results by time. Use "qdr:h" for past hour, "qdr:d" for past day, "qdr:w" for past week, "qdr:m" for past month, "qdr:y" for past year. Leave empty for all time.',
 		routing: {
@@ -276,9 +279,6 @@ function createTimeoutProperty(operationName: string): INodeProperties {
  */
 function createSearchProperties(): INodeProperties[] {
 	return [
-		// Operation notice
-		createOperationNotice(resourceName, name),
-
 		// Required parameters
 		createQueryProperty(name),
 
@@ -295,7 +295,13 @@ function createSearchProperties(): INodeProperties[] {
 }
 
 // Build and export the properties and options
-const { options, properties } = buildApiProperties(name, displayName, createSearchProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createSearchProperties(),
+);
 
 // Add the additional fields property separately so it appears only when custom body is enabled
 properties.push(createAdditionalFieldsProperty(name));

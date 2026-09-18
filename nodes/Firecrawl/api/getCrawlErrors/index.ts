@@ -1,8 +1,10 @@
 import { INodeProperties } from 'n8n-workflow';
-import { buildApiProperties, createOperationNotice } from '../common';
+import { buildApiProperties } from '../common';
 
 export const name = 'getCrawlErrors';
-export const displayName = 'Get crawl errors';
+export const displayName = 'Get Crawl Errors';
+export const action = 'Get crawl errors';
+export const description = 'Get crawl errors and URLs blocked by robots.txt';
 export const resourceName = 'Crawling';
 
 function createCrawlIdProperty(): INodeProperties {
@@ -12,6 +14,7 @@ function createCrawlIdProperty(): INodeProperties {
 		type: 'string',
 		required: true,
 		default: '',
+		placeholder: 'e.g. 550e8400-e29b-41d4-a716-446655440000',
 		description: 'ID of the crawl job',
 		routing: {
 			request: {
@@ -28,10 +31,16 @@ function createCrawlIdProperty(): INodeProperties {
 }
 
 function createProperties(): INodeProperties[] {
-	return [createOperationNotice(resourceName, name, 'GET'), createCrawlIdProperty()];
+	return [createCrawlIdProperty()];
 }
 
-const { options, properties } = buildApiProperties(name, displayName, createProperties());
+const { options, properties } = buildApiProperties(
+	name,
+	displayName,
+	action,
+	description,
+	createProperties(),
+);
 
 options.routing = {
 	request: {
