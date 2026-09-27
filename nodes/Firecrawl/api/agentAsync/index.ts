@@ -2,10 +2,13 @@ import {
 	IDataObject,
 	IExecuteSingleFunctions,
 	IHttpRequestOptions,
+	INodeExecutionData,
 	INodeProperties,
+	IN8nHttpFullResponse,
 	NodeOperationError,
 } from 'n8n-workflow';
 import { buildApiProperties, extractUrls, convertToSchema } from '../common';
+import { agentAsyncItem } from './response';
 
 const name = 'agentAsync';
 const displayName = 'Start AI Agent Job (Async)';
@@ -325,11 +328,13 @@ options.routing = {
 	},
 	output: {
 		postReceive: [
-			{
-				type: 'setKeyValue',
-				properties: {
-					data: '={{$response.body}}',
-				},
+			async function (
+				this: IExecuteSingleFunctions,
+				items: INodeExecutionData[],
+				response: IN8nHttpFullResponse,
+			): Promise<INodeExecutionData[]> {
+				const item = agentAsyncItem(response.body) as INodeExecutionData;
+				return items.length === 0 ? [item] : items.map(() => item);
 			},
 		],
 	},
