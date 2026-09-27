@@ -1,5 +1,6 @@
 import { INodeProperties } from 'n8n-workflow';
 import { buildApiProperties } from '../common';
+import { copyJsonBody } from '../jsonBody';
 
 const name = 'getExtractStatus';
 const displayName = 'Get Extract Status';
@@ -58,14 +59,7 @@ options.routing = {
 		method: 'GET',
 	},
 	output: {
-		postReceive: [
-			{
-				type: 'setKeyValue',
-				properties: {
-					data: '={{$response.body}}',
-				},
-			},
-		],
+		postReceive: [copyJsonBody],
 	},
 };
 

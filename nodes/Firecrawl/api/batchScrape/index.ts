@@ -9,6 +9,7 @@ import {
 	createBatchUrlsProperty,
 	createScrapeOptionsProperty,
 } from '../common';
+import { copyJsonBody } from '../jsonBody';
 
 // Define the operation name and display name
 export const name = 'batchScrape';
@@ -223,14 +224,7 @@ options.routing = {
 		url: '/batch/scrape',
 	},
 	output: {
-		postReceive: [
-			{
-				type: 'setKeyValue',
-				properties: {
-					data: '={{$response.body}}',
-				},
-			},
-		],
+		postReceive: [copyJsonBody],
 	},
 };
 

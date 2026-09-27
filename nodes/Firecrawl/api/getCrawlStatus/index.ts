@@ -1,5 +1,6 @@
 import { INodeProperties } from 'n8n-workflow';
 import { buildApiProperties /* createUrlProperty */ } from '../common';
+import { copyJsonBody } from '../jsonBody';
 
 // Define the operation name and display name
 export const name = 'getCrawlStatus';
@@ -61,14 +62,7 @@ options.routing = {
 		method: 'GET',
 	},
 	output: {
-		postReceive: [
-			{
-				type: 'setKeyValue',
-				properties: {
-					data: '={{$response.body}}',
-				},
-			},
-		],
+		postReceive: [copyJsonBody],
 	},
 };
 
