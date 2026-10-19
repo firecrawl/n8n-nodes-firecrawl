@@ -31,6 +31,9 @@ The **Firecrawl** node supports the following operations:
 ### Scrape
 - Scrapes a URL and get its content in LLM-ready format (markdown, structured data via LLM Extract, screenshot, html)
 
+### Parse File
+- Upload a file from an n8n binary property (PDF, Word, Excel, PowerPoint, HTML, CSV and more, up to 50 MB) and convert it to LLM-ready markdown, HTML, links or a summary
+
 ### Crawl
 - Scrapes all the URLs of a web page and return content in LLM-ready format
 
@@ -63,6 +66,27 @@ The **Firecrawl** node supports the following operations:
 
 ### Get Extract Status
 - Get the current status of an extraction job
+
+### Create Monitor
+- Create a scheduled monitor that tracks changes to specific URLs, a crawled site or search results
+
+### Get Many Monitors
+- List the monitors on your team
+
+### Get Monitor
+- Get the configuration and latest check summary of a monitor by ID
+
+### Delete Monitor
+- Delete a monitor and stop its scheduled checks
+
+### Run Monitor Check
+- Trigger a monitor check immediately instead of waiting for its schedule
+
+### Get Many Monitor Checks
+- List the check history of a monitor, optionally filtered by status
+
+### Get Monitor Check
+- Get the results of a single monitor check, including per-page changes
 
 ### Team Token Usage
 - Get remaining and plan tokens for the authenticated team

@@ -40,6 +40,9 @@ export const allMethods = {
 	Interact: {
 		...apiMethods.Interact,
 	},
+	Monitor: {
+		...apiMethods.Monitor,
+	},
 	Extract: {
 		...apiMethods.Extract,
 	},

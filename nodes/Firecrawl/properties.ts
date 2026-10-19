@@ -46,6 +46,10 @@ export const resourceSelect: INodeProperties[] = [
 				value: 'MapSearch',
 			},
 			{
+				name: 'Monitor',
+				value: 'Monitor',
+			},
+			{
 				name: 'Scraping',
 				value: 'Scraping',
 			},
@@ -184,6 +188,31 @@ export const extraProperties: INodeProperties[] = [
 				useCustomBody: [true],
 				resource: ['Agent'],
 				operation: ['agentAsync'],
+			},
+		},
+	},
+	{
+		displayName: 'Custom Body',
+		name: 'customBody',
+		type: 'json',
+		default:
+			'{\n  "name": "Pricing page changes",\n  "schedule": { "text": "every 6 hours", "timezone": "UTC" },\n  "targets": [\n    {\n      "type": "scrape",\n      "urls": ["https://firecrawl.dev/pricing"],\n      "scrapeOptions": { "formats": ["markdown"] }\n    }\n  ]\n}',
+		description: 'Custom body to send to the Monitor endpoint',
+		routing: {
+			request: {
+				body: {
+					customBody: '={{JSON.parse($value)}}',
+				},
+			},
+			send: {
+				preSend: [preSendActionCustomBody],
+			},
+		},
+		displayOptions: {
+			show: {
+				useCustomBody: [true],
+				resource: ['Monitor'],
+				operation: ['monitorCreate'],
 			},
 		},
 	},

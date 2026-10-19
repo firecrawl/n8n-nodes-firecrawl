@@ -4,6 +4,7 @@ import { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 import { options as searchOptions, properties as searchProperties } from './search';
 import { options as mapOptions, properties as mapProperties } from './map';
 import { options as scrapeOptions, properties as scrapeProperties } from './scrape';
+import { options as parseOptions, properties as parseProperties } from './parse';
 import { options as crawlOptions, properties as crawlProperties } from './crawl';
 import { options as batchScrapeOptions, properties as batchScrapeProperties } from './batchScrape';
 import {
@@ -95,12 +96,32 @@ import {
 	options as interactStopOptions,
 	properties as interactStopProperties,
 } from './interactStop';
+import {
+	options as monitorCreateOptions,
+	properties as monitorCreateProperties,
+} from './monitorCreate';
+import { options as monitorListOptions, properties as monitorListProperties } from './monitorList';
+import { options as monitorGetOptions, properties as monitorGetProperties } from './monitorGet';
+import {
+	options as monitorDeleteOptions,
+	properties as monitorDeleteProperties,
+} from './monitorDelete';
+import { options as monitorRunOptions, properties as monitorRunProperties } from './monitorRun';
+import {
+	options as monitorChecksListOptions,
+	properties as monitorChecksListProperties,
+} from './monitorChecksList';
+import {
+	options as monitorCheckGetOptions,
+	properties as monitorCheckGetProperties,
+} from './monitorCheckGet';
 
 /**
  * Operation options organized by resource
  */
 const scrapingOperationOptions: INodePropertyOptions[] = [
 	scrapeOptions,
+	parseOptions,
 	batchScrapeOptions,
 	batchScrapeStatusOptions,
 	batchScrapeErrorsOptions,
@@ -141,6 +162,16 @@ const browserOperationOptions: INodePropertyOptions[] = [
 	browserExecuteOptions,
 	browserListOptions,
 	browserDeleteOptions,
+];
+
+const monitorOperationOptions: INodePropertyOptions[] = [
+	monitorCreateOptions,
+	monitorListOptions,
+	monitorGetOptions,
+	monitorDeleteOptions,
+	monitorRunOptions,
+	monitorChecksListOptions,
+	monitorCheckGetOptions,
 ];
 
 const interactOperationOptions: INodePropertyOptions[] = [
@@ -255,6 +286,20 @@ const interactOperationSelector: INodeProperties = {
 	options: interactOperationOptions,
 };
 
+const monitorOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['Monitor'],
+		},
+	},
+	default: 'monitorCreate',
+	options: monitorOperationOptions,
+};
+
 const extractOperationSelector: INodeProperties = {
 	displayName: 'Operation',
 	name: 'operation',
@@ -275,6 +320,7 @@ const extractOperationSelector: INodeProperties = {
 const rawProperties: INodeProperties[] = [
 	// Scraping operations
 	...scrapeProperties,
+	...parseProperties,
 	...batchScrapeProperties,
 	...batchScrapeStatusProperties,
 	...batchScrapeErrorsProperties,
@@ -309,6 +355,14 @@ const rawProperties: INodeProperties[] = [
 	...interactContextProperties,
 	...interactProperties,
 	...interactStopProperties,
+	// Monitor operations
+	...monitorCreateProperties,
+	...monitorListProperties,
+	...monitorGetProperties,
+	...monitorDeleteProperties,
+	...monitorRunProperties,
+	...monitorChecksListProperties,
+	...monitorCheckGetProperties,
 	// Extract operations (Legacy)
 	...extractProperties,
 	...getExtractStatusProperties,
@@ -324,6 +378,7 @@ export const apiProperties: INodeProperties[] = [
 	mapSearchOperationSelector,
 	browserOperationSelector,
 	interactOperationSelector,
+	monitorOperationSelector,
 	accountOperationSelector,
 	extractOperationSelector,
 	...rawProperties,
@@ -335,6 +390,11 @@ export const apiProperties: INodeProperties[] = [
 export const apiMethods = {
 	Scraping: {
 		scrape: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		parse: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
@@ -487,6 +547,43 @@ export const apiMethods = {
 			},
 		},
 		interactStop: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+	},
+	Monitor: {
+		monitorCreate: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		monitorList: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		monitorGet: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		monitorDelete: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		monitorRun: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		monitorChecksList: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		monitorCheckGet: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},
