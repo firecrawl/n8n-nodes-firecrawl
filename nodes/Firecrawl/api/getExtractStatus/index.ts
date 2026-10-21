@@ -61,6 +61,7 @@ options.routing = {
 		postReceive: [
 			{
 				type: 'setKeyValue',
+				enabled: '={{ $version < 2 }}',
 				properties: {
 					data: '={{$response.body}}',
 				},

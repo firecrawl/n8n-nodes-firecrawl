@@ -1,6 +1,6 @@
 import { INodeProperties } from 'n8n-workflow';
 import { apiProperties } from './api';
-import { preSendActionCustomBody } from './helpers';
+import { preSendActionCustomBody, throwOnApiError } from './helpers';
 
 /**
  * Authentication properties for the Firecrawl API
@@ -51,6 +51,11 @@ export const resourceSelect: INodeProperties[] = [
 			},
 		],
 		default: 'Scraping',
+		routing: {
+			output: {
+				postReceive: [throwOnApiError],
+			},
+		},
 	},
 ];
 

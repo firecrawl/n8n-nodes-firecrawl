@@ -1196,6 +1196,14 @@ export function createScrapeOptionsProperty(
 						],
 					},
 					{
+						displayName: 'Max Age (Ms)',
+						name: 'maxAge',
+						type: 'number',
+						default: 172800000,
+						description:
+							'Return a cached copy of the page only if it is younger than this many milliseconds. Set to 0 to always fetch a fresh copy. Defaults to 2 days.',
+					},
+					{
 						displayName: 'Mobile',
 						name: 'mobile',
 						type: 'boolean',

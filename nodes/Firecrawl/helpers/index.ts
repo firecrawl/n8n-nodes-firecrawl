@@ -9,6 +9,7 @@ import {
 	getFileExtensionFromContentType,
 	isBinaryResponse,
 	processBinaryResponseData,
+	throwOnApiError,
 } from './http/responseHandlers';
 
 // Export property builders
@@ -26,6 +27,7 @@ export {
 	getFileExtensionFromContentType,
 	isBinaryResponse,
 	processBinaryResponseData,
+	throwOnApiError,
 	buildPropertiesWithOptions,
 	buildPropertiesWithMethods,
 	aggregateNodeMethods,

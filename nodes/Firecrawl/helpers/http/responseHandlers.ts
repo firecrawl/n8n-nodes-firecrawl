@@ -1,9 +1,12 @@
 import {
 	BinaryFileType,
 	IBinaryData,
+	IDataObject,
 	IExecuteSingleFunctions,
 	IN8nHttpFullResponse,
 	INodeExecutionData,
+	JsonObject,
+	NodeApiError,
 } from 'n8n-workflow';
 import { PostReceiveAction } from '../types';
 
@@ -104,3 +107,36 @@ export const processBinaryResponseData: PostReceiveAction =
 
 		return items;
 	};
+
+/**
+ * Fails the item when the API reports an error, either through an HTTP error status or
+ * through `success: false` in a 2xx body, keeping the API's `code` and `error` text.
+ */
+export const throwOnApiError: PostReceiveAction = async function throwOnApiError(
+	this: IExecuteSingleFunctions,
+	items: INodeExecutionData[],
+	response: IN8nHttpFullResponse,
+): Promise<INodeExecutionData[]> {
+	const body = response.body;
+	const json =
+		typeof body === 'object' && body !== null && !Array.isArray(body)
+			? (body as IDataObject)
+			: undefined;
+
+	if (response.statusCode < 400 && json?.success !== false) {
+		return items;
+	}
+
+	const code = typeof json?.code === 'string' ? json.code : undefined;
+	const apiMessage =
+		(typeof json?.error === 'string' && json.error) ||
+		(typeof json?.message === 'string' && json.message) ||
+		(typeof body === 'string' && body.trim()) ||
+		`Firecrawl API request failed with status ${response.statusCode}`;
+
+	throw new NodeApiError(this.getNode(), (json ?? { body }) as JsonObject, {
+		message: code ? `${code}: ${apiMessage}` : apiMessage,
+		description: json?.details ? JSON.stringify(json.details) : undefined,
+		httpCode: String(response.statusCode),
+	});
+};

@@ -11,8 +11,8 @@ export class Firecrawl implements INodeType {
 		name: 'firecrawl',
 		icon: 'file:firecrawl-logo.svg',
 		group: ['transform'],
-		version: [1, 1.1],
-		defaultVersion: 1.1,
+		version: [1, 1.1, 2],
+		defaultVersion: 2,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Scrape, crawl, map, search, and extract structured data from websites using Firecrawl API',
 		defaults: {
@@ -29,6 +29,7 @@ export class Firecrawl implements INodeType {
 		],
 		requestDefaults: {
 			baseURL: '={{ $credentials.baseUrl || "https://api.firecrawl.dev/v2" }}',
+			ignoreHttpStatusErrors: true,
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
