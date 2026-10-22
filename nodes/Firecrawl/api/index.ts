@@ -95,6 +95,11 @@ import {
 	options as interactStopOptions,
 	properties as interactStopProperties,
 } from './interactStop';
+import { options as findToolsOptions, properties as findToolsProperties } from './findTools';
+import {
+	options as runProviderToolOptions,
+	properties as runProviderToolProperties,
+} from './runProviderTool';
 
 /**
  * Operation options organized by resource
@@ -147,6 +152,11 @@ const interactOperationOptions: INodePropertyOptions[] = [
 	interactContextOptions,
 	interactOptions,
 	interactStopOptions,
+];
+
+const dataProvidersOperationOptions: INodePropertyOptions[] = [
+	findToolsOptions,
+	runProviderToolOptions,
 ];
 
 const extractOperationOptions: INodePropertyOptions[] = [
@@ -255,6 +265,20 @@ const interactOperationSelector: INodeProperties = {
 	options: interactOperationOptions,
 };
 
+const dataProvidersOperationSelector: INodeProperties = {
+	displayName: 'Operation',
+	name: 'operation',
+	type: 'options',
+	noDataExpression: true,
+	displayOptions: {
+		show: {
+			resource: ['DataProviders'],
+		},
+	},
+	default: 'findTools',
+	options: dataProvidersOperationOptions,
+};
+
 const extractOperationSelector: INodeProperties = {
 	displayName: 'Operation',
 	name: 'operation',
@@ -309,6 +333,9 @@ const rawProperties: INodeProperties[] = [
 	...interactContextProperties,
 	...interactProperties,
 	...interactStopProperties,
+	// Data provider operations (Alexandria)
+	...findToolsProperties,
+	...runProviderToolProperties,
 	// Extract operations (Legacy)
 	...extractProperties,
 	...getExtractStatusProperties,
@@ -325,6 +352,7 @@ export const apiProperties: INodeProperties[] = [
 	browserOperationSelector,
 	interactOperationSelector,
 	accountOperationSelector,
+	dataProvidersOperationSelector,
 	extractOperationSelector,
 	...rawProperties,
 ];
@@ -487,6 +515,18 @@ export const apiMethods = {
 			},
 		},
 		interactStop: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+	},
+	DataProviders: {
+		findTools: {
+			execute(this: any) {
+				return this.helpers.httpRequest as any;
+			},
+		},
+		runProviderTool: {
 			execute(this: any) {
 				return this.helpers.httpRequest as any;
 			},

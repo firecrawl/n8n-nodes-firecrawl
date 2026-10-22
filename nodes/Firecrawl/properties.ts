@@ -34,6 +34,10 @@ export const resourceSelect: INodeProperties[] = [
 				value: 'Crawling',
 			},
 			{
+				name: 'Data Providers (Alexandria)',
+				value: 'DataProviders',
+			},
+			{
 				name: 'Extract (Legacy)',
 				value: 'Extract',
 			},

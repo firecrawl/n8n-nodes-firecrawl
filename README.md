@@ -79,6 +79,12 @@ The **Firecrawl** node supports the following operations:
 ### Team Queue Status
 - Get your team's current queue load (waiting, active, max concurrency)
 
+### Find Data Provider Tools
+Search the Alexandria catalogue of data providers (companies, filings, jobs, public records, places, prices and more) for a capability and its inputs. Free.
+
+### Run Data Provider Tool
+Run a capability that Find Data Provider Tools returned, with its provider, capability and inputs, and get its records.
+
 ## AI Agent Tool Usage
 
 This node can be used as a tool with n8n's AI Agent node, allowing AI agents to scrape, crawl, and extract data from websites dynamically.

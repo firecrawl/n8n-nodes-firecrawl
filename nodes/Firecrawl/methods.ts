@@ -40,6 +40,9 @@ export const allMethods = {
 	Interact: {
 		...apiMethods.Interact,
 	},
+	DataProviders: {
+		...apiMethods.DataProviders,
+	},
 	Extract: {
 		...apiMethods.Extract,
 	},
